@@ -21,9 +21,9 @@ const ReactComponent: React.FC = () => {
     <IonTabs>
       <IonRouterOutlet>
         <Route path="/tabs/tab1" component={Tab1} exact={true} />
-        <Route path="/tab2" component={Tab2} exact={true} />
-        <Route path="/tab2/details" component={Details} />
-        <Route path="/tab3" component={Tab3} />
+        <Route path="/tabs/tab2" component={Tab2} exact={true} />
+        <Route path="/tabs/tab2/details" component={Details} />
+        <Route path="/tabs/tab3" component={Tab3} />
         <Route
           path="/tabs"
           render={() => <Redirect to="/tabs/tab1" />}

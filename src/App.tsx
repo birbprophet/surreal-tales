@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
@@ -10,9 +10,6 @@ import { auth, analytics } from "./scripts/firebase";
 
 import { setupConfig, IonApp } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-
-import Tab1 from "./pages/Tab1";
-import Tabs from "./pages/Tabs";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -38,6 +35,10 @@ import "./css/index.css";
 import "./css/fonts.css";
 import "./css/typist.css";
 
+import Tab1 from "./pages/Tab1";
+import Tabs from "./pages/Tabs";
+import Home from "./pages/Home";
+
 LogRocket.init("hjzdrl/surreal-tales");
 
 setupConfig({
@@ -52,7 +53,7 @@ const App: React.FC = () => {
   const [user] = useAuthState(auth);
 
   useEffect(() => {
-    analytics.logEvent("visited_home_page");
+    analytics.logEvent("loaded_app");
     if (user && user.email) {
       LogRocket.identify(user.email);
     }
@@ -62,6 +63,7 @@ const App: React.FC = () => {
     <ApolloProvider client={client}>
       <IonApp>
         <IonReactRouter>
+          <Route path="/" component={Home} exact={true} />
           <Route path="/login" component={Tab1} />
           <Route path="/tabs" component={Tabs} />
         </IonReactRouter>
