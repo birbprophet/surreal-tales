@@ -2,7 +2,6 @@ import React from "react";
 import {
   IonList,
   IonItem,
-  IonLabel,
   IonToolbar,
   IonTitle,
   IonButtons,
