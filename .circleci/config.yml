@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:10
-    working_directory: ~/gatsby-site
+    working_directory: ~/surreal-tales-site
     steps:
       - checkout
       - restore_cache:
