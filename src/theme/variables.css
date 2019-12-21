@@ -71,6 +71,22 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  --ion-color-dark-grey: #2d3748;
+  --ion-color-dark-grey-rgb: 45, 55, 72;
+  --ion-color-dark-grey-contrast: #ffffff;
+  --ion-color-dark-grey-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-grey-shade: #28303f;
+  --ion-color-dark-grey-tint: #424b5a;
+}
+
+.ion-color-dark-grey {
+  --ion-color-base: var(--ion-color-dark-grey);
+  --ion-color-base-rgb: var(--ion-color-dark-grey-rgb);
+  --ion-color-contrast: var(--ion-color-dark-grey-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-dark-grey-contrast-rgb);
+  --ion-color-shade: var(--ion-color-dark-grey-shade);
+  --ion-color-tint: var(--ion-color-dark-grey-tint);
 }
 
 ion-toolbar {

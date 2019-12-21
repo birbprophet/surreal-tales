@@ -3,18 +3,11 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonInput,
-  IonToggle,
-  IonRadio,
-  IonCheckbox,
-  IonItemSliding,
-  IonItemOption,
-  IonItemOptions,
-  IonContent,
   IonToolbar,
   IonTitle,
   IonButtons,
-  IonBackButton
+  IonBackButton,
+  IonContent
 } from "@ionic/react";
 
 interface IProps {
@@ -45,21 +38,28 @@ const ReactComponent: React.FC<IProps> = ({ menuOpen }) => {
         }
       >
         <div className="flex-1">
-          <IonList>
-            <IonItem lines="none">Pokémon Yellow</IonItem>
-            <IonItem>
-              <IonLabel>Mega Man X</IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonLabel>The Legend of Zelda</IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonLabel>Pac-Man</IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonLabel>Super Mario World</IonLabel>
-            </IonItem>
-          </IonList>
+          <IonContent color="dark-grey">
+            <IonList>
+              <IonItem lines="none" color="dark-grey">
+                An Item Something
+              </IonItem>
+              <IonItem lines="none" color="dark-grey">
+                An Item Something
+              </IonItem>
+              <IonItem lines="none" color="dark-grey">
+                An Item Something
+              </IonItem>
+              <IonItem lines="none" color="dark-grey">
+                An Item Something
+              </IonItem>
+              <IonItem lines="none" color="dark-grey">
+                An Item Something
+              </IonItem>
+              <IonItem lines="none" color="dark-grey">
+                An Item Something
+              </IonItem>
+            </IonList>
+          </IonContent>
         </div>
       </div>
       <div
@@ -80,7 +80,7 @@ const ReactComponent: React.FC<IProps> = ({ menuOpen }) => {
               }
         }
       >
-        <IonToolbar>
+        <IonToolbar color="dark-grey">
           <IonButtons slot="end">
             <IonBackButton defaultHref="/" />
           </IonButtons>

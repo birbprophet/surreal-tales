@@ -14,9 +14,7 @@ import {
   IonListHeader,
   IonPage,
   IonToolbar,
-  IonButtons,
-  IonBackButton,
-  IonTitle
+  IonButtons
 } from "@ionic/react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, analytics } from "../scripts/firebase";
