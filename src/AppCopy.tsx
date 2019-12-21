@@ -8,11 +8,22 @@ import LogRocket from "logrocket";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, analytics } from "./scripts/firebase";
 
-import { setupConfig, IonApp } from "@ionic/react";
+import {
+  setupConfig,
+  IonApp,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs
+} from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-
+import { apps, flash, send } from "ionicons/icons";
 import Tab1 from "./pages/Tab1";
-import Tabs from "./pages/Tabs";
+import Tab2 from "./pages/Tab2";
+import Tab3 from "./pages/Tab3";
+import Details from "./pages/Details";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -32,13 +43,6 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import "typeface-roboto";
-import "typeface-asap";
-import "./css/index.css";
-import "./css/fonts.css";
-import "./css/typist.css";
-
-LogRocket.init("hjzdrl/surreal-tales");
 
 setupConfig({
   mode: "ios"
@@ -62,8 +66,33 @@ const App: React.FC = () => {
     <ApolloProvider client={client}>
       <IonApp>
         <IonReactRouter>
-          <Route path="/login" component={Tab1} />
-          <Route path="/tabs" component={Tabs} />
+          <IonTabs>
+            <IonRouterOutlet>
+              <Route path="/tab1" component={Tab1} exact={true} />
+              <Route path="/tab2" component={Tab2} exact={true} />
+              <Route path="/tab2/details" component={Details} />
+              <Route path="/tab3" component={Tab3} />
+              <Route
+                path="/"
+                render={() => <Redirect to="/tab1" />}
+                exact={true}
+              />
+            </IonRouterOutlet>
+            <IonTabBar slot="bottom">
+              <IonTabButton tab="tab1" href="/tab1">
+                <IonIcon icon={flash} />
+                <IonLabel>Tab One</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab2" href="/tab2">
+                <IonIcon icon={apps} />
+                <IonLabel>Tab Two</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab3" href="/tab3">
+                <IonIcon icon={send} />
+                <IonLabel>Tab Three</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
         </IonReactRouter>
       </IonApp>
     </ApolloProvider>

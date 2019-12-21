@@ -24,7 +24,9 @@
     "react-router-dom": "^5.1.0",
     "react-scripts": "^3.3.0",
     "react-typist": "^2.0.5",
-    "react-typist-loop": "0.0.5"
+    "react-typist-loop": "0.0.5",
+    "typeface-asap": "0.0.69",
+    "typeface-roboto": "0.0.75"
   },
   "scripts": {
     "start": "react-scripts start",
