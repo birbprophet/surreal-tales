@@ -1,5 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Redirect, Route } from "react-router-dom";
+
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "@apollo/react-hooks";
+
+import LogRocket from "logrocket";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, analytics } from "./scripts/firebase";
+
 import {
   setupConfig,
   IonApp,
@@ -40,34 +48,55 @@ setupConfig({
   mode: "ios"
 });
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route path="/tab1" component={Tab1} exact={true} />
-          <Route path="/tab2" component={Tab2} exact={true} />
-          <Route path="/tab2/details" component={Details} />
-          <Route path="/tab3" component={Tab3} />
-          <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon icon={flash} />
-            <IonLabel>Tab One</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={apps} />
-            <IonLabel>Tab Two</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={send} />
-            <IonLabel>Tab Three</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+const client = new ApolloClient({
+  uri: "https://surreal-adventures.herokuapp.com/v1/graphql"
+});
+
+const App: React.FC = () => {
+  const [user] = useAuthState(auth);
+
+  useEffect(() => {
+    analytics.logEvent("visited_home_page");
+    if (user && user.email) {
+      LogRocket.identify(user.email);
+    }
+  }, [user]);
+
+  return (
+    <ApolloProvider client={client}>
+      <IonApp>
+        <IonReactRouter>
+          <IonTabs>
+            <IonRouterOutlet>
+              <Route path="/tab1" component={Tab1} exact={true} />
+              <Route path="/tab2" component={Tab2} exact={true} />
+              <Route path="/tab2/details" component={Details} />
+              <Route path="/tab3" component={Tab3} />
+              <Route
+                path="/"
+                render={() => <Redirect to="/tab1" />}
+                exact={true}
+              />
+            </IonRouterOutlet>
+            <IonTabBar slot="bottom">
+              <IonTabButton tab="tab1" href="/tab1">
+                <IonIcon icon={flash} />
+                <IonLabel>Tab One</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab2" href="/tab2">
+                <IonIcon icon={apps} />
+                <IonLabel>Tab Two</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab3" href="/tab3">
+                <IonIcon icon={send} />
+                <IonLabel>Tab Three</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
+        </IonReactRouter>
+      </IonApp>
+    </ApolloProvider>
+  );
+};
 
 export default App;
