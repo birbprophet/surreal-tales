@@ -62,6 +62,31 @@ const ReactComponent: React.FC<IProps> = ({ menuOpen }) => {
           </IonList>
         </div>
       </div>
+      <div
+        className="fixed w-screen bottom-0 z-30"
+        style={
+          menuOpen
+            ? {
+                WebkitTransition: "transform 0.5s ease-in-out",
+                transition: "transform 0.5s ease-in-out",
+                WebkitTransform: "translateX(0)",
+                transform: "translateX(0)"
+              }
+            : {
+                WebkitTransition: "transform 0.5s ease-in-out",
+                transition: "transform 0.5s ease-in-out",
+                WebkitTransform: "translateX(100%)",
+                transform: "translateX(100%)"
+              }
+        }
+      >
+        <IonToolbar>
+          <IonButtons slot="end">
+            <IonBackButton defaultHref="/" />
+          </IonButtons>
+          <IonTitle>Back Button</IonTitle>
+        </IonToolbar>
+      </div>
     </>
   );
 };
