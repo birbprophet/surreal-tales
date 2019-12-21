@@ -14,9 +14,7 @@ import {
   IonListHeader,
   IonPage,
   IonToolbar,
-  IonButtons,
-  IonButton,
-  IonPopover
+  IonButtons
 } from "@ionic/react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, analytics } from "../scripts/firebase";
@@ -25,7 +23,7 @@ import Typist from "react-typist";
 import MenuIcon from "../components/MenuIcon";
 import MenuOverlay from "../components/MenuOverlay";
 
-import { book, build, colorFill, grid, logIn } from "ionicons/icons";
+import { book, build, colorFill, grid } from "ionicons/icons";
 
 const Page: React.FC = () => {
   const [user] = useAuthState(auth);
