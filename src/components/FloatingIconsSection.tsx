@@ -32,10 +32,11 @@ const ReactComponent: React.FC = () => {
   ];
   return (
     <div className="absolute top-0 w-full h-64 -z-10 bg-transparent">
-      {animatedIcons.map(IconSvg => (
+      {animatedIcons.map((IconSvg, idx) => (
         <AnimatedIcon
           svgIcon={<IconSvg className="opacity-50 h-8" />}
-        ></AnimatedIcon>
+          key={idx}
+        />
       ))}
     </div>
   );

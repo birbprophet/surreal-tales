@@ -1,0 +1,8 @@
+  22/12/2019 7:37:27 PM: Starting composition “tempConverterComp”.
+
+  Output To: C:\Users\benja\AppData\Local\Temp\Bodymovin\0edcuyerks\img_43.png    22/12/2019 7:37:27 PM: Finished composition “tempConverterComp”.
+
+
+  Total Time Elapsed: 0 Seconds
+Log closed on 22/12/2019 at 7:37:27 PM
+

@@ -115,6 +115,7 @@ export const generateUseSpringProps = () => {
     },
     config: {
       duration: 12000 + Math.random() * 8000
-    }
+    },
+    reset: true
   };
 };
