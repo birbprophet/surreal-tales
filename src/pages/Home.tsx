@@ -22,12 +22,13 @@ import Typist from "react-typist";
 
 import MenuIcon from "../components/MenuIcon";
 import MenuOverlay from "../components/MenuOverlay";
+import FloatingIconSection from "../components/FloatingIconsSection";
 
 import { book, build, colorFill, grid } from "ionicons/icons";
 
 const Page: React.FC = () => {
   const [user] = useAuthState(auth);
-  const [menuOpen, setMenuOpen] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenuOpen = () => setMenuOpen(!menuOpen);
 
@@ -40,7 +41,7 @@ const Page: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <div className="font-rounded font-semibold text-gray-100 text-2xl flex-1 p-4">
+            <div className="font-rounded font-semibold text-gray-100 text-2xl flex-1 py-4 pl-6">
               <Typist
                 avgTypingDelay={100}
                 startDelay={1000}
@@ -63,6 +64,7 @@ const Page: React.FC = () => {
       </IonHeader>
       <IonContent>
         <MenuOverlay menuOpen={menuOpen} />
+        <FloatingIconSection />
         <IonCard className="welcome-card">
           <img src="/assets/shapes.svg" alt="" className="" />
           <IonCardHeader>
