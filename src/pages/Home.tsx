@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
   IonContent,
   IonHeader,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
   IonPage,
   IonToolbar,
   IonButtons
@@ -19,12 +9,11 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, analytics } from "../scripts/firebase";
 import Typist from "react-typist";
+import TypistLoop from "react-typist-loop";
 
 import MenuIcon from "../components/MenuIcon";
 import MenuOverlay from "../components/MenuOverlay";
 import FloatingIconSection from "../components/FloatingIconsSection";
-
-import { book, build, colorFill, grid } from "ionicons/icons";
 
 const Page: React.FC = () => {
   const [user] = useAuthState(auth);
@@ -36,8 +25,17 @@ const Page: React.FC = () => {
     analytics.logEvent("visited_home_page");
   }, [user]);
 
+  const typistLoopTextList: string[] = [
+    "Stories",
+    "Crossovers",
+    "Adventures",
+    "Fanfics",
+    "Memes"
+  ];
+
   return (
     <IonPage>
+      {/* HOME HEADER SECTION */}
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -62,54 +60,85 @@ const Page: React.FC = () => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
+
+      {/* HOME CONTENT SECTION */}
       <IonContent>
         <MenuOverlay menuOpen={menuOpen} />
         <FloatingIconSection />
-        <IonCard className="welcome-card">
-          <img src="/assets/shapes.svg" alt="" className="" />
-          <IonCardHeader>
-            <IonCardSubtitle>Get Started</IonCardSubtitle>
-            <IonCardTitle>Welcome to Ionic</IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            <p>
-              Now that your app has been created, you'll want to start building
-              out features and components. Check out some of the resources below
-              for next steps.
-            </p>
-          </IonCardContent>
-        </IonCard>
+        <div className="relative top-0 inset-x-0 flex flex-col h-full font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight">
+          <div className="p-8">
+            <div className="flex">
+              <div className="mr-2">Create </div>
+              <div>
+                <TypistLoop interval={3000}>
+                  {typistLoopTextList.map(text => (
+                    <Typist
+                      key={text}
+                      startDelay={500}
+                      cursor={{
+                        show: false,
+                        blink: true,
+                        element: "_"
+                      }}
+                    >
+                      {text}
+                      <Typist.Delay ms={4000} />
+                      {Array.prototype.map.call(text, _ => (
+                        <Typist.Backspace count={1} delay={50} />
+                      ))}
+                    </Typist>
+                  ))}
+                </TypistLoop>
+              </div>
+            </div>
+            <div>you never knew</div>
+            <div>you wanted</div>
+            <div className="text-gray-400 mt-8 text-xl font-normal">
+              Generate unique stories by interacting with an AI via "choose your
+              adventure" style prompts.
+            </div>
+          </div>
 
-        <IonList lines="none">
-          <IonListHeader>
-            <IonLabel>Resources</IonLabel>
-          </IonListHeader>
-          <IonItem href="https://ionicframework.com/docs/" target="_blank">
-            <IonIcon slot="start" color="medium" icon={book} />
-            <IonLabel>Ionic Documentation</IonLabel>
-          </IonItem>
-          <IonItem
-            href="https://ionicframework.com/docs/building/scaffolding"
-            target="_blank"
-          >
-            <IonIcon slot="start" color="medium" icon={build} />
-            <IonLabel>Scaffold Out Your App</IonLabel>
-          </IonItem>
-          <IonItem
-            href="https://ionicframework.com/docs/layout/structure"
-            target="_blank"
-          >
-            <IonIcon slot="start" color="medium" icon={grid} />
-            <IonLabel>Change Your App Layout</IonLabel>
-          </IonItem>
-          <IonItem
-            href="https://ionicframework.com/docs/theming/basics"
-            target="_blank"
-          >
-            <IonIcon slot="start" color="medium" icon={colorFill} />
-            <IonLabel>Theme Your App</IonLabel>
-          </IonItem>
-        </IonList>
+          <div className="flex-1" />
+          <div className="text-center m-8">
+            <div className="bg-gray-300 p-4 text-2xl font-rounded font-semibold rounded-lg text-gray-900">
+              Create Stories Now
+            </div>
+          </div>
+        </div>
+
+        <div className="relative top-0 inset-x-0 flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight bg-gray-900">
+          <div className="flex">
+            <div className="mr-2">Create </div>
+            <div>
+              <TypistLoop interval={3000}>
+                {typistLoopTextList.map(text => (
+                  <Typist
+                    key={text}
+                    startDelay={500}
+                    cursor={{
+                      show: false,
+                      blink: true,
+                      element: "_"
+                    }}
+                  >
+                    {text}
+                    <Typist.Delay ms={4000} />
+                    {Array.prototype.map.call(text, _ => (
+                      <Typist.Backspace count={1} delay={50} />
+                    ))}
+                  </Typist>
+                ))}
+              </TypistLoop>
+            </div>
+          </div>
+          <div>you never knew</div>
+          <div>you wanted</div>
+          <div className="text-lg font-normal">
+            Generate unique stories by interacting with an AI via "choose your
+            adventure" style prompts.
+          </div>
+        </div>
       </IonContent>
     </IonPage>
   );

@@ -31,10 +31,10 @@ const ReactComponent: React.FC = () => {
     PepeSvg
   ];
   return (
-    <div className="absolute top-0 w-full h-64 -z-10">
+    <div className="absolute top-0 w-full h-64 -z-10 bg-transparent">
       {animatedIcons.map(IconSvg => (
         <AnimatedIcon
-          svgIcon={<IconSvg className="opacity-50 h-10" />}
+          svgIcon={<IconSvg className="opacity-50 h-8" />}
         ></AnimatedIcon>
       ))}
     </div>
