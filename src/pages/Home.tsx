@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 
 import { useSpring, animated } from "react-spring"
 
@@ -27,23 +27,29 @@ import { ReactComponent as OptionsTraceSvg } from "../components/assets/options/
 const Page: React.FC = () => {
   const [user] = useAuthState(auth)
   const [menuOpen, setMenuOpen] = useState(false)
+  const optionsLoaded = useRef(false)
 
   const toggleMenuOpen = () => setMenuOpen(!menuOpen)
 
   const loadedFadeInProps = useSpring({
     from: { opacity: 0 },
     to: async (next: any) => {
-      await next({ opacity: 1 })
-      await next({ opacity: 0 })
+      if (!optionsLoaded.current) {
+        await next({ opacity: 1 })
+        await next({ opacity: 0 })
+      }
     },
     config: { duration: 4000 },
   })
 
   const loadedDelayFadeInProps = useSpring({
-    from: { opacity: 0 },
+    from: { opacity: optionsLoaded.current ? 1 : 0 },
     to: async (next: any) => {
-      await next({ opacity: 0 })
-      await next({ opacity: 1 })
+      if (!optionsLoaded.current) {
+        await next({ opacity: 0.1 })
+        await next({ opacity: 1 })
+        optionsLoaded.current = true
+      }
     },
     config: { duration: 4000 },
   })
@@ -140,7 +146,7 @@ const Page: React.FC = () => {
               </SvgLines>
               <div className="absolute top-0">
                 <animated.div style={loadedDelayFadeInProps}>
-                  <OptionsAnimation />
+                  <OptionsAnimation playingState={"playing"} />
                 </animated.div>
               </div>
             </div>

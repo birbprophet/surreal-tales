@@ -62,9 +62,13 @@ const animationData = {"v":"5.5.10","fr":25,"ip":0,"op":200,"w":1667,"h":565,"nm
 
 const animationConfig = {
   animationData: animationData,
-  autoplay: true,
+  autoplay: false,
   loop: true,
 }
 
-const ReactComponent: React.FC = () => <Lottie config={animationConfig} />
+interface IProps {
+  playingState: 'playing' | 'stopped' | 'paused'
+}
+
+const ReactComponent: React.FC<IProps> = ({playingState}) => <Lottie config={animationConfig} playingState={playingState} />
 export default ReactComponent
