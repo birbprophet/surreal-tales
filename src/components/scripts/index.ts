@@ -1,0 +1,1 @@
+export { generateUseSpringProps } from "./generateUseSpringProps";
