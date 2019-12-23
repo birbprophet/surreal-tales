@@ -37,7 +37,7 @@ import "./css/typist.css"
 import "./css/styles.css"
 
 import Login from "./pages/Login"
-import Tabs from "./pages/Tabs"
+import AppPage from "./pages/AppPage"
 import Home from "./pages/Home"
 
 LogRocket.init("hjzdrl/surreal-tales")
@@ -102,7 +102,7 @@ const App: React.FC = () => {
             render={() => (user ? <Redirect to="/app" /> : <Login />)}
             exact={true}
           />
-          <ProtectedRoute path="/app" component={Tabs} />
+          <ProtectedRoute path="/app" component={AppPage} />
         </IonReactRouter>
       </IonApp>
     </ApolloProvider>
