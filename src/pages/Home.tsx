@@ -10,8 +10,7 @@ import {
   IonToolbar,
   IonButtons,
 } from "@ionic/react"
-import { useAuthState } from "react-firebase-hooks/auth"
-import { auth, analytics } from "../scripts/firebase"
+import { analytics } from "../scripts/firebase"
 
 import Typist from "react-typist"
 import TypistLoop from "react-typist-loop"
@@ -26,16 +25,22 @@ import OptionsAnimation from "../components/assets/options/OptionsAnimation"
 import { ReactComponent as OptionsTraceSvg } from "../components/assets/options/options_trace.svg"
 import { ReactComponent as ProfileTraceSvg } from "../components/assets/profile/profile_trace.svg"
 import { ReactComponent as ProfileSvg } from "../components/assets/profile/profile.svg"
+import { ReactComponent as ChoicesTraceSvg } from "../components/assets/choices/choices_trace.svg"
+import { ReactComponent as ChoicesSvg } from "../components/assets/choices/choices.svg"
 
 const Page: React.FC = () => {
-  const [user] = useAuthState(auth)
   const [menuOpen, setMenuOpen] = useState(false)
   const optionsLoaded = useRef(false)
 
+
   const [sectionTwoIsInViewport, sectionTwoTargetRef] = useIsInViewport({
+    threshold: 100
+  })
+  const [sectionThreeIsInViewport, sectionThreeTargetRef] = useIsInViewport({
     threshold: 50,
   })
   const [profileTraceCompleted, setProfileTraceCompleted] = useState(false)
+  const [choicesTraceCompleted, setChoicesTraceCompleted] = useState(false)
 
   const toggleMenuOpen = () => setMenuOpen(!menuOpen)
 
@@ -67,9 +72,15 @@ const Page: React.FC = () => {
     opacity: profileTraceCompleted ? 0 : 1,
   })
 
+  const choicesSvgProps = useSpring({ opacity: choicesTraceCompleted ? 1 : 0 })
+  const choicesTraceSvgProps = useSpring({
+    opacity: choicesTraceCompleted ? 0 : 1,
+  })
+
+
   useEffect(() => {
     analytics.logEvent("visited_home_page")
-  }, [user])
+  }, [])
 
   const typistLoopTextList: string[] = [
     "Stories",
@@ -113,10 +124,10 @@ const Page: React.FC = () => {
         <FloatingIconSection />
 
         {/* SECTION ONE */}
-        <div className=" relative top-0 inset-x-0 flex flex-col h-full font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight">
+        <div className=" relative top-0 inset-x-0 flex flex-col h-full font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight" >
           <div className="p-8">
             <div className="flex">
-              <div className="mr-2">Create </div>
+              <div className="mr-2" >Create </div>
               <div>
                 <TypistLoop interval={3000}>
                   {typistLoopTextList.map((text, idx) => (
@@ -172,25 +183,26 @@ const Page: React.FC = () => {
 
         {/* SECTION TWO */}
         <div
-          ref={sectionTwoTargetRef}
-          className="sticky flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-3xl text-left tracking-normal leading-tight"
+          
+          className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-3xl text-left tracking-normal leading-tight"
         >
-          <div className="mr-2 mb-4">
+          <div className="mr-2 mb-4" ref={sectionTwoTargetRef}>
             Choose or create any character you want
           </div>
-          <div className="text-center mb-8 mt-4 mr-10 relative">
+          <div className="text-center mb-8 mt-4 mr-10 relative" >
             <div className="text-gray-300 stroke-current h-24">
               <SvgLines
+                
                 animate={
-                  sectionTwoIsInViewport || profileTraceCompleted
+                  sectionTwoIsInViewport
                     ? "play"
-                    : "hide"
+                    : false
                 }
                 duration={4000}
                 callback={() => setProfileTraceCompleted(true)}
               >
                 <animated.div style={profileTraceSvgProps}>
-                  <ProfileTraceSvg />
+                  <ProfileTraceSvg  />
                 </animated.div>
               </SvgLines>
             </div>
@@ -209,33 +221,32 @@ const Page: React.FC = () => {
 
         {/* SECTION THREE */}
         <div
-          ref={sectionTwoTargetRef}
           className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-2xl text-left tracking-normal leading-tight bg-gray-900"
         >
-          <div className="mr-2 mb-4">
-            Choose or create
+          <div className="mr-2 mb-4" ref={sectionThreeTargetRef}>
+            Advance your stories
             <br />
-            any character you want
+            with AI generated options
           </div>
           <div className="text-center mb-8 mt-4 mr-10 relative">
             <div className="text-gray-300 stroke-current h-24">
               <SvgLines
                 animate={
-                  sectionTwoIsInViewport || profileTraceCompleted
+                  sectionThreeIsInViewport
                     ? "play"
-                    : "hide"
+                    : false
                 }
                 duration={4000}
-                callback={() => setProfileTraceCompleted(true)}
+                callback={() => setChoicesTraceCompleted(true)}
               >
-                <animated.div style={profileTraceSvgProps}>
-                  <ProfileTraceSvg />
+                <animated.div style={choicesTraceSvgProps}>
+                  <ChoicesTraceSvg />
                 </animated.div>
               </SvgLines>
             </div>
             <div className="-mt-24">
-              <animated.div style={profileSvgProps}>
-                <ProfileSvg />
+              <animated.div style={choicesSvgProps}>
+                <ChoicesSvg />
               </animated.div>
             </div>
           </div>
