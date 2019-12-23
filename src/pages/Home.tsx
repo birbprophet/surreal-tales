@@ -27,20 +27,33 @@ import { ReactComponent as ProfileTraceSvg } from "../components/assets/profile/
 import { ReactComponent as ProfileSvg } from "../components/assets/profile/profile.svg"
 import { ReactComponent as ChoicesTraceSvg } from "../components/assets/choices/choices_trace.svg"
 import { ReactComponent as ChoicesSvg } from "../components/assets/choices/choices.svg"
+import { ReactComponent as AssembleTraceSvg } from "../components/assets/assemble/assemble_trace.svg"
+import { ReactComponent as AssembleSvg } from "../components/assets/assemble/assemble.svg"
+import { ReactComponent as ShareTraceSvg } from "../components/assets/share/share_trace.svg"
+import { ReactComponent as ShareSvg } from "../components/assets/share/share.svg"
 
 const Page: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const optionsLoaded = useRef(false)
 
-
   const [sectionTwoIsInViewport, sectionTwoTargetRef] = useIsInViewport({
-    threshold: 100
+    threshold: 100,
   })
   const [sectionThreeIsInViewport, sectionThreeTargetRef] = useIsInViewport({
-    threshold: 50,
+    threshold: 100,
   })
+  const [sectionFourIsInViewport, sectionFourTargetRef] = useIsInViewport({
+    threshold: 100,
+  })
+  const [sectionFiveIsInViewport, sectionFiveTargetRef] = useIsInViewport({
+    threshold: 100,
+  })
+
   const [profileTraceCompleted, setProfileTraceCompleted] = useState(false)
   const [choicesTraceCompleted, setChoicesTraceCompleted] = useState(false)
+  const [assembleTraceCompleted, setAssembleTraceCompleted] = useState(false)
+  const [shareTraceCompleted, setShareTraceCompleted] = useState(false)
+
 
   const toggleMenuOpen = () => setMenuOpen(!menuOpen)
 
@@ -77,6 +90,15 @@ const Page: React.FC = () => {
     opacity: choicesTraceCompleted ? 0 : 1,
   })
 
+  const assembleSvgProps = useSpring({ opacity: assembleTraceCompleted ? 1 : 0 })
+  const assembleTraceSvgProps = useSpring({
+    opacity: assembleTraceCompleted ? 0 : 1,
+  })
+
+  const shareSvgProps = useSpring({ opacity: shareTraceCompleted ? 1 : 0 })
+  const shareTraceSvgProps = useSpring({
+    opacity: shareTraceCompleted ? 0 : 1,
+  })
 
   useEffect(() => {
     analytics.logEvent("visited_home_page")
@@ -124,10 +146,10 @@ const Page: React.FC = () => {
         <FloatingIconSection />
 
         {/* SECTION ONE */}
-        <div className=" relative top-0 inset-x-0 flex flex-col h-full font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight" >
+        <div className=" relative top-0 inset-x-0 flex flex-col h-full font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight">
           <div className="p-8">
             <div className="flex">
-              <div className="mr-2" >Create </div>
+              <div className="mr-2">Create </div>
               <div>
                 <TypistLoop interval={3000}>
                   {typistLoopTextList.map((text, idx) => (
@@ -182,27 +204,22 @@ const Page: React.FC = () => {
         </div>
 
         {/* SECTION TWO */}
-        <div
-          
-          className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-3xl text-left tracking-normal leading-tight"
-        >
+        <div className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-3xl text-left tracking-normal leading-tight">
           <div className="mr-2 mb-4" ref={sectionTwoTargetRef}>
+            <div className="font-rounded rounded-full bg-gray-200 text-gray-900 h-10 w-10 text-center align-middle text-3xl mb-2">
+              1
+            </div>
             Choose or create any character you want
           </div>
-          <div className="text-center mb-8 mt-4 mr-10 relative" >
+          <div className="text-center mb-8 mt-4 mr-10 relative">
             <div className="text-gray-300 stroke-current h-24">
               <SvgLines
-                
-                animate={
-                  sectionTwoIsInViewport
-                    ? "play"
-                    : false
-                }
+                animate={sectionTwoIsInViewport ? "play" : false}
                 duration={4000}
                 callback={() => setProfileTraceCompleted(true)}
               >
                 <animated.div style={profileTraceSvgProps}>
-                  <ProfileTraceSvg  />
+                  <ProfileTraceSvg />
                 </animated.div>
               </SvgLines>
             </div>
@@ -214,28 +231,23 @@ const Page: React.FC = () => {
           </div>
           <div className="flex-1" />
           <div className="text-lg font-normal">
-            Start your adventure by choosing a real or fictional character, or
+            Start your adventure by selecting an existing character, or
             create your own by writing a short bio.
           </div>
         </div>
 
         {/* SECTION THREE */}
-        <div
-          className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-2xl text-left tracking-normal leading-tight bg-gray-900"
-        >
+        <div className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-3xl text-left tracking-normal leading-tight bg-gray-900">
+          <div className="font-rounded rounded-full bg-gray-200 text-gray-900 h-10 w-10 text-center align-middle text-3xl mb-2">
+            2
+          </div>
           <div className="mr-2 mb-4" ref={sectionThreeTargetRef}>
-            Advance your stories
-            <br />
-            with AI generated options
+            Progress by selecting AI generated options
           </div>
           <div className="text-center mb-8 mt-4 mr-10 relative">
             <div className="text-gray-300 stroke-current h-24">
               <SvgLines
-                animate={
-                  sectionThreeIsInViewport
-                    ? "play"
-                    : false
-                }
+                animate={sectionThreeIsInViewport ? "play" : false}
                 duration={4000}
                 callback={() => setChoicesTraceCompleted(true)}
               >
@@ -253,8 +265,73 @@ const Page: React.FC = () => {
           <div className="flex-1" />
 
           <div className="text-lg font-normal relative bottom-0">
-            Generate unique stories by interacting with an AI via "choose your
-            adventure" style prompts.
+            Based on your selected character and choices, you will be presented with different options to shape the story.
+          </div>
+        </div>
+
+        {/* SECTION FOUR */}
+        <div className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-3xl text-left tracking-normal leading-tight bg-gray-900">
+          <div className="font-rounded rounded-full bg-gray-200 text-gray-900 h-10 w-10 text-center align-middle text-3xl mb-2">
+            3
+          </div>
+          <div className="mr-2 mb-4" ref={sectionFourTargetRef}>
+            Piece them together to form unique stories
+          </div>
+          <div className="text-center mb-8 mt-4 mr-10 relative">
+            <div className="text-gray-300 stroke-current h-24">
+              <SvgLines
+                animate={sectionFourIsInViewport ? "play" : false}
+                duration={4000}
+                callback={() => setAssembleTraceCompleted(true)}
+              >
+                <animated.div style={assembleTraceSvgProps}>
+                  <AssembleTraceSvg />
+                </animated.div>
+              </SvgLines>
+            </div>
+            <div className="-mt-24">
+              <animated.div style={assembleSvgProps}>
+                <AssembleSvg />
+              </animated.div>
+            </div>
+          </div>
+          <div className="flex-1" />
+
+          <div className="text-lg font-normal relative bottom-0">
+            All interactions are dynamically generated, so everyone will have their own unique tales to share.
+          </div>
+        </div>
+
+        {/* SECTION FIVE */}
+        <div className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-3xl text-left tracking-normal leading-tight bg-gray-900">
+          <div className="font-rounded rounded-full bg-gray-200 text-gray-900 h-10 w-10 text-center align-middle text-3xl mb-2">
+            4
+          </div>
+          <div className="mr-2 mb-4" ref={sectionFiveTargetRef}>
+            Share your surreal tales with friends
+          </div>
+          <div className="text-center mb-8 mt-4 mr-10 relative">
+            <div className="text-gray-300 stroke-current h-24">
+              <SvgLines
+                animate={sectionFiveIsInViewport ? "play" : false}
+                duration={4000}
+                callback={() => setShareTraceCompleted(true)}
+              >
+                <animated.div style={shareTraceSvgProps}>
+                  <ShareTraceSvg />
+                </animated.div>
+              </SvgLines>
+            </div>
+            <div className="-mt-24">
+              <animated.div style={shareSvgProps}>
+                <ShareSvg />
+              </animated.div>
+            </div>
+          </div>
+          <div className="flex-1" />
+
+          <div className="text-lg font-normal relative bottom-0">
+            Save your favourite tales and share them with friends, or even create stories together.
           </div>
         </div>
       </IonContent>
