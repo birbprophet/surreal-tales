@@ -1,32 +1,32 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
-import { useSpring, animated } from "react-spring";
+import { useSpring, animated } from "react-spring"
 
 const ReactComponent: React.FC = () => {
-  const [resourcesOpen, setResourcesOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false)
+  const [aboutOpen, setAboutOpen] = useState(false)
 
   const resourcesOpenProps = useSpring({
-    transform: resourcesOpen ? "rotate(0deg)" : "rotate(-90deg)"
-  });
+    transform: resourcesOpen ? "rotate(0deg)" : "rotate(-90deg)",
+  })
 
   const aboutOpenProps = useSpring({
-    transform: aboutOpen ? "rotate(0deg)" : "rotate(-90deg)"
-  });
+    transform: aboutOpen ? "rotate(0deg)" : "rotate(-90deg)",
+  })
 
   const handleResourcesOnClick = () => {
     if (aboutOpen && !resourcesOpen) {
-      setAboutOpen(!aboutOpen);
+      setAboutOpen(!aboutOpen)
     }
-    setResourcesOpen(!resourcesOpen);
-  };
+    setResourcesOpen(!resourcesOpen)
+  }
 
   const handleAboutOnClick = () => {
     if (resourcesOpen && !aboutOpen) {
-      setResourcesOpen(!resourcesOpen);
+      setResourcesOpen(!resourcesOpen)
     }
-    setAboutOpen(!aboutOpen);
-  };
+    setAboutOpen(!aboutOpen)
+  }
 
   return (
     <>
@@ -105,7 +105,7 @@ const ReactComponent: React.FC = () => {
         </button>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ReactComponent;
+export default ReactComponent

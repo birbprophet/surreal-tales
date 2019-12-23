@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useSpring, animated } from "react-spring";
+import React, { useState } from "react"
+import { useSpring, animated } from "react-spring"
+
 import {
   IonList,
   IonItem,
@@ -7,40 +8,46 @@ import {
   IonButtons,
   IonContent,
   IonText,
-  IonIcon
-} from "@ionic/react";
+  IonIcon,
+  IonButton,
+} from "@ionic/react"
 
-import { arrowForward } from "ionicons/icons";
+import { useAuthState } from "react-firebase-hooks/auth"
+import { auth } from "../scripts/firebase"
+
+import { arrowForward } from "ionicons/icons"
 
 interface IProps {
-  menuOpen: boolean;
+  menuOpen: boolean
 }
 
 const ReactComponent: React.FC<IProps> = ({ menuOpen }) => {
-  const [resourcesOpen, setResourcesOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
+  const [user] = useAuthState(auth)
+
+  const [resourcesOpen, setResourcesOpen] = useState(false)
+  const [aboutOpen, setAboutOpen] = useState(false)
 
   const resourcesOpenProps = useSpring({
-    transform: resourcesOpen ? "rotate(90deg)" : "rotate(0deg)"
-  });
+    transform: resourcesOpen ? "rotate(90deg)" : "rotate(0deg)",
+  })
 
   const aboutOpenProps = useSpring({
-    transform: aboutOpen ? "rotate(90deg)" : "rotate(0deg)"
-  });
+    transform: aboutOpen ? "rotate(90deg)" : "rotate(0deg)",
+  })
 
   const handleResourcesOnClick = () => {
     if (aboutOpen && !resourcesOpen) {
-      setAboutOpen(!aboutOpen);
+      setAboutOpen(!aboutOpen)
     }
-    setResourcesOpen(!resourcesOpen);
-  };
+    setResourcesOpen(!resourcesOpen)
+  }
 
   const handleAboutOnClick = () => {
     if (resourcesOpen && !aboutOpen) {
-      setResourcesOpen(!resourcesOpen);
+      setResourcesOpen(!resourcesOpen)
     }
-    setAboutOpen(!aboutOpen);
-  };
+    setAboutOpen(!aboutOpen)
+  }
 
   return (
     <>
@@ -54,13 +61,13 @@ const ReactComponent: React.FC<IProps> = ({ menuOpen }) => {
                 WebkitTransition: "transform 0.5s ease-in-out",
                 transition: "transform 0.5s ease-in-out",
                 WebkitTransform: "translateX(0)",
-                transform: "translateX(0)"
+                transform: "translateX(0)",
               }
             : {
                 WebkitTransition: "transform 0.5s ease-in-out",
                 transition: "transform 0.5s ease-in-out",
                 WebkitTransform: "translateX(100%)",
-                transform: "translateX(100%)"
+                transform: "translateX(100%)",
               }
         }
       >
@@ -178,26 +185,32 @@ const ReactComponent: React.FC<IProps> = ({ menuOpen }) => {
                 WebkitTransition: "transform 0.5s ease-in-out",
                 transition: "transform 0.5s ease-in-out",
                 WebkitTransform: "translateX(0)",
-                transform: "translateX(0)"
+                transform: "translateX(0)",
               }
             : {
                 WebkitTransition: "transform 0.5s ease-in-out",
                 transition: "transform 0.5s ease-in-out",
                 WebkitTransform: "translateX(100%)",
-                transform: "translateX(100%)"
+                transform: "translateX(100%)",
               }
         }
       >
         <IonToolbar color="dark-grey">
           <div className="text-center p-8 bg-gray-800">
-            <div className="bg-gray-300 p-4 text-2xl font-rounded font-semibold rounded-lg text-gray-900">
-              Create Stories Now
-            </div>
+            <IonButton
+              size="large"
+              expand="block"
+              routerLink={user ? "/app" : "/login"}
+            >
+              <div className="text-lg font-rounded font-semibold">
+                CREATE STORIES NOW
+              </div>
+            </IonButton>
           </div>
         </IonToolbar>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ReactComponent;
+export default ReactComponent

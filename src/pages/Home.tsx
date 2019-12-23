@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 
 import { useSpring, animated } from "react-spring"
 import useIsInViewport from "use-is-in-viewport"
+import { Link } from "react-router-dom"
 
 import {
   IonContent,
@@ -9,8 +10,10 @@ import {
   IonPage,
   IonToolbar,
   IonButtons,
+  IonButton,
 } from "@ionic/react"
-import { analytics } from "../scripts/firebase"
+import { auth, analytics } from "../scripts/firebase"
+import { useAuthState } from "react-firebase-hooks/auth"
 
 import Typist from "react-typist"
 import TypistLoop from "react-typist-loop"
@@ -35,6 +38,7 @@ import { ReactComponent as ShareSvg } from "../components/assets/share/share.svg
 const Page: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const optionsLoaded = useRef(false)
+  const [user] = useAuthState(auth)
 
   const [sectionTwoIsInViewport, sectionTwoTargetRef] = useIsInViewport({
     threshold: 100,
@@ -53,7 +57,6 @@ const Page: React.FC = () => {
   const [choicesTraceCompleted, setChoicesTraceCompleted] = useState(false)
   const [assembleTraceCompleted, setAssembleTraceCompleted] = useState(false)
   const [shareTraceCompleted, setShareTraceCompleted] = useState(false)
-
 
   const toggleMenuOpen = () => setMenuOpen(!menuOpen)
 
@@ -90,7 +93,9 @@ const Page: React.FC = () => {
     opacity: choicesTraceCompleted ? 0 : 1,
   })
 
-  const assembleSvgProps = useSpring({ opacity: assembleTraceCompleted ? 1 : 0 })
+  const assembleSvgProps = useSpring({
+    opacity: assembleTraceCompleted ? 1 : 0,
+  })
   const assembleTraceSvgProps = useSpring({
     opacity: assembleTraceCompleted ? 0 : 1,
   })
@@ -117,23 +122,25 @@ const Page: React.FC = () => {
       {/* HOME HEADER SECTION */}
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <div className="font-rounded font-semibold text-gray-100 text-2xl flex-1 py-4 pl-6">
-              <Typist
-                avgTypingDelay={100}
-                startDelay={1000}
-                cursor={{
-                  show: true,
-                  blink: true,
-                  element: "_",
-                  hideWhenDone: false,
-                }}
-              >
-                Surreal <Typist.Delay ms={500} />
-                Tales
-              </Typist>
-            </div>
-          </IonButtons>
+          <Link to="/home" style={{ textDecoration: "none" }}>
+            <IonButtons slot="start">
+              <div className="font-rounded font-semibold text-gray-100 text-2xl flex-1 py-4 pl-6">
+                <Typist
+                  avgTypingDelay={100}
+                  startDelay={1000}
+                  cursor={{
+                    show: true,
+                    blink: true,
+                    element: "_",
+                    hideWhenDone: false,
+                  }}
+                >
+                  Surreal <Typist.Delay ms={500} />
+                  Tales
+                </Typist>
+              </div>
+            </IonButtons>
+          </Link>
           <IonButtons slot="end">
             <MenuIcon menuOpen={menuOpen} toggleMenuOpen={toggleMenuOpen} />
           </IonButtons>
@@ -150,12 +157,12 @@ const Page: React.FC = () => {
           <div className="p-8">
             <div className="flex">
               <div className="mr-2">Create </div>
-              <div>
-                <TypistLoop interval={3000}>
+              <div className="text-indigo-300">
+                <TypistLoop interval={0}>
                   {typistLoopTextList.map((text, idx) => (
                     <Typist
                       key={idx}
-                      startDelay={500}
+                      startDelay={1000}
                       cursor={{
                         show: false,
                         blink: true,
@@ -196,10 +203,15 @@ const Page: React.FC = () => {
                 </animated.div>
               </div>
             </div>
-
-            <div className="bg-gray-300 p-4 mt-2 text-2xl font-rounded font-semibold rounded-lg text-gray-900">
-              Create Stories Now
-            </div>
+            <IonButton
+              size="large"
+              expand="block"
+              routerLink={user ? "/app" : "/login"}
+            >
+              <div className="text-lg font-rounded font-semibold">
+                CREATE STORIES NOW
+              </div>
+            </IonButton>
           </div>
         </div>
 
@@ -231,8 +243,8 @@ const Page: React.FC = () => {
           </div>
           <div className="flex-1" />
           <div className="text-lg font-normal">
-            Start your adventure by selecting an existing character, or
-            create your own by writing a short bio.
+            Start your adventure by selecting an existing character, or create
+            your own by writing a short bio.
           </div>
         </div>
 
@@ -265,7 +277,8 @@ const Page: React.FC = () => {
           <div className="flex-1" />
 
           <div className="text-lg font-normal relative bottom-0">
-            Based on your selected character and choices, you will be presented with different options to shape the story.
+            Based on your selected character and choices, you will be presented
+            with different options to shape the story.
           </div>
         </div>
 
@@ -298,7 +311,8 @@ const Page: React.FC = () => {
           <div className="flex-1" />
 
           <div className="text-lg font-normal relative bottom-0">
-            All interactions are dynamically generated, so everyone will have their own unique tales to share.
+            All interactions are dynamically generated, so everyone will have
+            their own unique tales to share.
           </div>
         </div>
 
@@ -331,7 +345,26 @@ const Page: React.FC = () => {
           <div className="flex-1" />
 
           <div className="text-lg font-normal relative bottom-0">
-            Save your favourite tales and share them with friends, or even create stories together.
+            Save your favourite tales and share them with friends, or even
+            create stories together.
+          </div>
+        </div>
+        <div className="bg-indigo-900 text-3xl text-center font-semibold pt-12 pb-8 mt-12 font-rounded">
+          <div>
+            Start creating your
+            <br />
+            own surreal tales
+            <div className="p-4 mt-6 mx-6">
+              <IonButton
+                size="large"
+                expand="block"
+                routerLink={user ? "/app" : "/login"}
+              >
+                <div className="text-lg font-rounded font-semibold text-indigo-900">
+                  CREATE STORIES NOW
+                </div>
+              </IonButton>
+            </div>
           </div>
         </div>
       </IonContent>
