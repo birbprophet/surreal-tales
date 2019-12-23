@@ -1,63 +1,64 @@
-import React, { useEffect } from "react";
-import { Route } from "react-router-dom";
+import React, { useEffect } from "react"
+import { Route } from "react-router-dom"
 
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
+import ApolloClient from "apollo-boost"
+import { ApolloProvider } from "@apollo/react-hooks"
 
-import LogRocket from "logrocket";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, analytics } from "./scripts/firebase";
+import LogRocket from "logrocket"
+import { useAuthState } from "react-firebase-hooks/auth"
+import { auth, analytics } from "./scripts/firebase"
 
-import { setupConfig, IonApp } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
+import { setupConfig, IonApp } from "@ionic/react"
+import { IonReactRouter } from "@ionic/react-router"
 
 /* Core CSS required for Ionic components to work properly */
-import "@ionic/react/css/core.css";
+import "@ionic/react/css/core.css"
 
 /* Basic CSS for apps built with Ionic */
-import "@ionic/react/css/normalize.css";
-import "@ionic/react/css/structure.css";
-import "@ionic/react/css/typography.css";
+import "@ionic/react/css/normalize.css"
+import "@ionic/react/css/structure.css"
+import "@ionic/react/css/typography.css"
 
 /* Optional CSS utils that can be commented out */
-import "@ionic/react/css/padding.css";
-import "@ionic/react/css/float-elements.css";
-import "@ionic/react/css/text-alignment.css";
-import "@ionic/react/css/text-transformation.css";
-import "@ionic/react/css/flex-utils.css";
-import "@ionic/react/css/display.css";
+import "@ionic/react/css/padding.css"
+import "@ionic/react/css/float-elements.css"
+import "@ionic/react/css/text-alignment.css"
+import "@ionic/react/css/text-transformation.css"
+import "@ionic/react/css/flex-utils.css"
+import "@ionic/react/css/display.css"
 
 /* Theme variables */
-import "./theme/variables.css";
-import "typeface-roboto";
-import "typeface-asap";
-import "./css/index.css";
-import "./css/fonts.css";
-import "./css/typist.css";
+import "./theme/variables.css"
+import "typeface-roboto"
+import "typeface-asap"
+import "./css/index.css"
+import "./css/fonts.css"
+import "./css/typist.css"
+import "./css/styles.css"
 
-import Tab1 from "./pages/Tab1";
-import Tabs from "./pages/Tabs";
-import Home from "./pages/Home";
+import Tab1 from "./pages/Tab1"
+import Tabs from "./pages/Tabs"
+import Home from "./pages/Home"
 
-LogRocket.init("hjzdrl/surreal-tales");
+LogRocket.init("hjzdrl/surreal-tales")
 
 setupConfig({
-  mode: "ios"
-});
+  mode: "ios",
+})
 
 const client = new ApolloClient({
-  uri: "https://surreal-adventures.herokuapp.com/v1/graphql"
-});
+  uri: "https://surreal-adventures.herokuapp.com/v1/graphql",
+})
 
 const App: React.FC = () => {
-  const [user] = useAuthState(auth);
+  const [user] = useAuthState(auth)
 
   useEffect(() => {
-    analytics.logEvent("loaded_app");
+    analytics.logEvent("loaded_app")
     if (user && user.email) {
-      LogRocket.identify(user.email);
+      LogRocket.identify(user.email)
     }
-  }, [user]);
+  }, [user])
 
   return (
     <ApolloProvider client={client}>
@@ -69,7 +70,7 @@ const App: React.FC = () => {
         </IonReactRouter>
       </IonApp>
     </ApolloProvider>
-  );
-};
+  )
+}
 
-export default App;
+export default App

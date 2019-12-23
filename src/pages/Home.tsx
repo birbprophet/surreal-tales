@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 
 import { useSpring, animated } from "react-spring"
+import useIsInViewport from "use-is-in-viewport"
 
 import {
   IonContent,
@@ -23,11 +24,18 @@ import FloatingIconSection from "../components/FloatingIconsSection"
 import OptionsAnimation from "../components/assets/options/OptionsAnimation"
 
 import { ReactComponent as OptionsTraceSvg } from "../components/assets/options/options_trace.svg"
+import { ReactComponent as ProfileTraceSvg } from "../components/assets/profile/profile_trace.svg"
+import { ReactComponent as ProfileSvg } from "../components/assets/profile/profile.svg"
 
 const Page: React.FC = () => {
   const [user] = useAuthState(auth)
   const [menuOpen, setMenuOpen] = useState(false)
   const optionsLoaded = useRef(false)
+
+  const [sectionTwoIsInViewport, sectionTwoTargetRef] = useIsInViewport({
+    threshold: 50,
+  })
+  const [profileTraceCompleted, setProfileTraceCompleted] = useState(false)
 
   const toggleMenuOpen = () => setMenuOpen(!menuOpen)
 
@@ -52,6 +60,11 @@ const Page: React.FC = () => {
       }
     },
     config: { duration: 4000 },
+  })
+
+  const profileSvgProps = useSpring({ opacity: profileTraceCompleted ? 1 : 0 })
+  const profileTraceSvgProps = useSpring({
+    opacity: profileTraceCompleted ? 0 : 1,
   })
 
   useEffect(() => {
@@ -100,7 +113,7 @@ const Page: React.FC = () => {
         <FloatingIconSection />
 
         {/* SECTION ONE */}
-        <div className="relative top-0 inset-x-0 flex flex-col h-full font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight">
+        <div className=" relative top-0 inset-x-0 flex flex-col h-full font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight">
           <div className="p-8">
             <div className="flex">
               <div className="mr-2">Create </div>
@@ -139,7 +152,7 @@ const Page: React.FC = () => {
 
           <div className="text-center mx-8 mb-8 bottom-0 relative">
             <div className="text-gray-300 stroke-current">
-              <SvgLines animate={true} duration={4000} fade>
+              <SvgLines animate={true} duration={4000}>
                 <animated.div style={loadedFadeInProps}>
                   <OptionsTraceSvg />
                 </animated.div>
@@ -158,9 +171,77 @@ const Page: React.FC = () => {
         </div>
 
         {/* SECTION TWO */}
-        <div className="relative top-0 inset-x-0 flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-4xl text-left tracking-normal leading-tight bg-gray-900">
-          <div className="mr-2">Create you wanted</div>
+        <div
+          ref={sectionTwoTargetRef}
+          className="sticky flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-3xl text-left tracking-normal leading-tight"
+        >
+          <div className="mr-2 mb-4">
+            Choose or create any character you want
+          </div>
+          <div className="text-center mb-8 mt-4 mr-10 relative">
+            <div className="text-gray-300 stroke-current h-24">
+              <SvgLines
+                animate={
+                  sectionTwoIsInViewport || profileTraceCompleted
+                    ? "play"
+                    : "hide"
+                }
+                duration={4000}
+                callback={() => setProfileTraceCompleted(true)}
+              >
+                <animated.div style={profileTraceSvgProps}>
+                  <ProfileTraceSvg />
+                </animated.div>
+              </SvgLines>
+            </div>
+            <div className="-mt-24">
+              <animated.div style={profileSvgProps}>
+                <ProfileSvg />
+              </animated.div>
+            </div>
+          </div>
+          <div className="flex-1" />
           <div className="text-lg font-normal">
+            Start your adventure by choosing a real or fictional character, or
+            create your own by writing a short bio.
+          </div>
+        </div>
+
+        {/* SECTION THREE */}
+        <div
+          ref={sectionTwoTargetRef}
+          className="relative flex flex-col h-full p-8 font-rounded font-bold text-gray-200 text-2xl text-left tracking-normal leading-tight bg-gray-900"
+        >
+          <div className="mr-2 mb-4">
+            Choose or create
+            <br />
+            any character you want
+          </div>
+          <div className="text-center mb-8 mt-4 mr-10 relative">
+            <div className="text-gray-300 stroke-current h-24">
+              <SvgLines
+                animate={
+                  sectionTwoIsInViewport || profileTraceCompleted
+                    ? "play"
+                    : "hide"
+                }
+                duration={4000}
+                callback={() => setProfileTraceCompleted(true)}
+              >
+                <animated.div style={profileTraceSvgProps}>
+                  <ProfileTraceSvg />
+                </animated.div>
+              </SvgLines>
+            </div>
+            <div className="-mt-24">
+              <animated.div style={profileSvgProps}>
+                <ProfileSvg />
+              </animated.div>
+            </div>
+          </div>
+          <div className="flex-1" />
+
+          <div className="text-lg font-normal relative bottom-0">
             Generate unique stories by interacting with an AI via "choose your
             adventure" style prompts.
           </div>
