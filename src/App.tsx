@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Route, Redirect } from "react-router-dom"
 
 import ApolloClient from "apollo-boost"
@@ -6,7 +6,7 @@ import { ApolloProvider } from "@apollo/react-hooks"
 
 import LogRocket from "logrocket"
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "./scripts/firebase"
+import { auth, firebaseApp } from "./scripts/firebase"
 import { segment } from "./scripts/segment"
 
 import { setupConfig, IonApp } from "@ionic/react"
@@ -40,6 +40,7 @@ import "./css/styles.css"
 import Login from "./pages/Login"
 import AppPage from "./pages/AppPage"
 import Home from "./pages/Home"
+import Welcome from "./pages/Welcome"
 
 LogRocket.init("hjzdrl/surreal-tales")
 
@@ -47,21 +48,44 @@ setupConfig({
   mode: "ios",
 })
 
-const client = new ApolloClient({
-  uri: "https://surreal-adventures.herokuapp.com/v1/graphql",
-})
+interface IAuthState {
+  status: string
+  user?: any
+  token?: string
+}
 
 const App: React.FC = () => {
   const [user] = useAuthState(auth)
+  const [userToken, setUserToken] = useState<string | null>(null)
 
-  auth.onAuthStateChanged(() => {
+  useEffect(() => {
     if (user && user.email) {
       LogRocket.identify(user.email)
       segment.identify(user.uid, {
         displayName: user.displayName,
         email: user.email,
       })
+
+      user.getIdTokenResult().then(idTokenResult => {
+        if (idTokenResult.claims["https://hasura.io/jwt/claims"]) {
+          user.getIdToken().then(token => setUserToken(token))
+        } else {
+          firebaseApp
+            .database()
+            .ref("metadata/" + user.uid + "/refreshTime")
+            .on("value", async () => {
+              user.getIdToken(true).then(token => setUserToken(token))
+            })
+        }
+      })
     }
+  }, [user])
+
+  const headers = userToken ? { Authorization: `Bearer ${userToken}` } : {}
+
+  const client = new ApolloClient({
+    uri: "https://surreal-adventures.herokuapp.com/v1/graphql",
+    headers,
   })
 
   return (
@@ -82,6 +106,7 @@ const App: React.FC = () => {
             exact={true}
           />
           <Route path="/app" component={AppPage} />
+          <Route path="/welcome" component={Welcome} />
         </IonReactRouter>
       </IonApp>
     </ApolloProvider>

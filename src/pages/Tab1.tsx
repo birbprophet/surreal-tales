@@ -13,11 +13,10 @@ import {
   IonListHeader,
   IonPage,
   IonTitle,
-  IonToolbar
-} from "@ionic/react";
-import { book, build, colorFill, grid } from "ionicons/icons";
-import React from "react";
-import "../css/index.css";
+  IonToolbar,
+} from "@ionic/react"
+import { book, build, colorFill, grid } from "ionicons/icons"
+import React from "react"
 
 const Tab1: React.FC = () => {
   return (
@@ -77,7 +76,7 @@ const Tab1: React.FC = () => {
         </IonList>
       </IonContent>
     </IonPage>
-  );
-};
+  )
+}
 
-export default Tab1;
+export default Tab1

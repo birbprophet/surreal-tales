@@ -13,6 +13,9 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../scripts/firebase"
 
+import gql from "graphql-tag"
+import { useQuery } from "@apollo/react-hooks"
+
 import { apps, flash, send } from "ionicons/icons"
 
 import Tab1 from "./Tab1"
@@ -20,23 +23,51 @@ import Tab2 from "./Tab2"
 import Profile from "./Profile"
 import Details from "./Details"
 
+const GET_USERNAME_FROM_EMAIL = gql`
+  query getUserEntry($email: String!) {
+    users(where: { email: { _eq: $email } }) {
+      username
+    }
+  }
+`
+
 const ProtectedRoute: React.FC<any> = ({ component: Component, ...rest }) => {
   const [user, initialising] = useAuthState(auth)
+  const { loading, data } = useQuery(GET_USERNAME_FROM_EMAIL, {
+    variables: { email: user ? user.email : "" },
+  })
+
+  let username: string | null
+  if (!loading && data && data.users.length === 1) {
+    username = data.users[0].username
+  } else if (data) {
+    username = null
+  } else {
+    username = ""
+  }
 
   return (
     <Route
       {...rest}
       render={props => {
-        return user || initialising ? (
-          initialising ? (
+        return user || initialising || loading ? (
+          initialising || loading || username === "" ? (
+            // if loading
             <>
               <Component {...props} />
               <IonLoading isOpen={true} translucent />
             </>
-          ) : (
+          ) : username ? (
+            // if loaded and user exists
             <Component {...props} />
+          ) : (
+            // if loaded but user does not exist
+            <Redirect
+              to={{ pathname: "/welcome", state: { from: props.location } }}
+            />
           )
         ) : (
+          // if user is not logged in
           <Redirect
             to={{ pathname: "/login", state: { from: props.location } }}
           />
