@@ -12,7 +12,8 @@ import {
   IonButtons,
   IonButton,
 } from "@ionic/react"
-import { auth, analytics } from "../scripts/firebase"
+import { auth } from "../scripts/firebase"
+import { segment } from "../scripts/segment"
 import { useAuthState } from "react-firebase-hooks/auth"
 
 import Typist from "react-typist"
@@ -106,7 +107,7 @@ const Page: React.FC = () => {
   })
 
   useEffect(() => {
-    analytics.logEvent("visited_home_page")
+    segment.page()
   }, [])
 
   const typistLoopTextList: string[] = [

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Route, Redirect } from "react-router-dom"
 
 import ApolloClient from "apollo-boost"
@@ -6,7 +6,8 @@ import { ApolloProvider } from "@apollo/react-hooks"
 
 import LogRocket from "logrocket"
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth, analytics } from "./scripts/firebase"
+import { auth } from "./scripts/firebase"
+import { segment } from "./scripts/segment"
 
 import { setupConfig, IonApp } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
@@ -53,13 +54,13 @@ const client = new ApolloClient({
 const App: React.FC = () => {
   const [user] = useAuthState(auth)
 
-  useEffect(() => {
-    analytics.logEvent("visited_app")
-  }, [])
-
   auth.onAuthStateChanged(() => {
     if (user && user.email) {
       LogRocket.identify(user.email)
+      segment.identify(user.uid, {
+        displayName: user.displayName,
+        email: user.email,
+      })
     }
   })
 

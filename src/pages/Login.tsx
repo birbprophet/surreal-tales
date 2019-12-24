@@ -31,6 +31,7 @@ import DreamerAnimation from "../components/assets/dreamer/DreamerAnimation"
 import { ReactComponent as DreamerTraceSvg } from "../components/assets/dreamer/dreamer_trace.svg"
 
 import { logoFacebook, logoGoogle } from "ionicons/icons"
+import { segment } from "../scripts/segment"
 
 const Page: React.FC = () => {
   const [, initialising] = useAuthState(auth)
@@ -64,9 +65,13 @@ const Page: React.FC = () => {
   })
 
   const toggleMenuOpen = () => setMenuOpen(!menuOpen)
+  const trackLogin = () => {
+    segment.track("Login")
+    analytics.logEvent("user_login")
+  }
 
   useEffect(() => {
-    analytics.logEvent("visited_login_page")
+    segment.page()
   }, [])
 
   return (
@@ -118,6 +123,7 @@ const Page: React.FC = () => {
           <IonButton
             size="large"
             onClick={() => {
+              trackLogin()
               loginWithGoogle()
             }}
           >
@@ -130,6 +136,7 @@ const Page: React.FC = () => {
           <IonButton
             size="large"
             onClick={() => {
+              trackLogin()
               loginWithFacebook()
             }}
           >

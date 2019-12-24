@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Redirect, Route } from "react-router-dom"
 import {
   IonIcon,
@@ -11,7 +11,7 @@ import {
 } from "@ionic/react"
 
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth, analytics } from "../scripts/firebase"
+import { auth } from "../scripts/firebase"
 
 import { apps, flash, send } from "ionicons/icons"
 
@@ -47,18 +47,6 @@ const ProtectedRoute: React.FC<any> = ({ component: Component, ...rest }) => {
 }
 
 const ReactComponent: React.FC = () => {
-  const [user] = useAuthState(auth)
-
-  useEffect(() => {
-    analytics.logEvent("entered_app_page")
-  }, [])
-
-  useEffect(() => {
-    if (user) {
-      analytics.logEvent("logged_in")
-    }
-  }, [user])
-
   return (
     <IonTabs>
       <IonRouterOutlet>
