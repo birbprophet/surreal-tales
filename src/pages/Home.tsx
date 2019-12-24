@@ -122,9 +122,9 @@ const Page: React.FC = () => {
       {/* HOME HEADER SECTION */}
       <IonHeader>
         <IonToolbar>
-          <Link to="/home" style={{ textDecoration: "none" }}>
-            <IonButtons slot="start">
-              <div className="font-rounded font-semibold text-gray-100 text-2xl flex-1 py-4 pl-6">
+          <IonButtons slot="start">
+            <div className="font-rounded font-semibold text-gray-100 text-2xl flex-1 py-4 pl-6">
+              <Link to="/home" style={{ textDecoration: "none" }}>
                 <Typist
                   avgTypingDelay={100}
                   startDelay={1000}
@@ -138,9 +138,9 @@ const Page: React.FC = () => {
                   Surreal <Typist.Delay ms={500} />
                   Tales
                 </Typist>
-              </div>
-            </IonButtons>
-          </Link>
+              </Link>
+            </div>
+          </IonButtons>
           <IonButtons slot="end">
             <MenuIcon menuOpen={menuOpen} toggleMenuOpen={toggleMenuOpen} />
           </IonButtons>

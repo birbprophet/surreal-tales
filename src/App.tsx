@@ -79,11 +79,14 @@ const App: React.FC = () => {
   const [user] = useAuthState(auth)
 
   useEffect(() => {
-    analytics.logEvent("loaded_app")
+    analytics.logEvent("visited_app")
+  }, [])
+
+  auth.onAuthStateChanged(() => {
     if (user && user.email) {
       LogRocket.identify(user.email)
     }
-  }, [user])
+  })
 
   return (
     <ApolloProvider client={client}>
@@ -102,7 +105,7 @@ const App: React.FC = () => {
             render={() => (user ? <Redirect to="/app" /> : <Login />)}
             exact={true}
           />
-          <ProtectedRoute path="/app" component={AppPage} />
+          <Route path="/app" component={AppPage} />
         </IonReactRouter>
       </IonApp>
     </ApolloProvider>

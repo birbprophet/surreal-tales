@@ -121,7 +121,7 @@ const Page: React.FC = () => {
               loginWithGoogle()
             }}
           >
-            <IonIcon icon={logoGoogle} size="large" slot="start" />
+            <IonIcon icon={logoGoogle} slot="start" />
             <div className="text-lg font-rounded font-semibold">
               LOGIN WITH GOOGLE
             </div>
@@ -133,7 +133,7 @@ const Page: React.FC = () => {
               loginWithFacebook()
             }}
           >
-            <IonIcon icon={logoFacebook} size="large" slot="start" />
+            <IonIcon icon={logoFacebook} slot="start" />
             <div className="text-lg font-rounded font-semibold">
               LOGIN WITH FACEBOOK
             </div>
