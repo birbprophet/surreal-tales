@@ -8,7 +8,7 @@ import LogRocket from "logrocket"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth, analytics } from "./scripts/firebase"
 
-import { setupConfig, IonApp, IonLoading } from "@ionic/react"
+import { setupConfig, IonApp } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
 
 /* Core CSS required for Ionic components to work properly */
@@ -49,31 +49,6 @@ setupConfig({
 const client = new ApolloClient({
   uri: "https://surreal-adventures.herokuapp.com/v1/graphql",
 })
-
-const ProtectedRoute: React.FC<any> = ({ component: Component, ...rest }) => {
-  const [user, initialising] = useAuthState(auth)
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        return user || initialising ? (
-          initialising ? (
-            <>
-              <Component {...props} />
-              <IonLoading isOpen={true} translucent />
-            </>
-          ) : (
-            <Component {...props} />
-          )
-        ) : (
-          <Redirect
-            to={{ pathname: "/login", state: { from: props.location } }}
-          />
-        )
-      }}
-    />
-  )
-}
 
 const App: React.FC = () => {
   const [user] = useAuthState(auth)
