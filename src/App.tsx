@@ -76,7 +76,6 @@ const App: React.FC = () => {
   }, [user])
 
   const headers = userToken ? { Authorization: `Bearer ${userToken}` } : {}
-
   const client = new ApolloClient({
     uri: "https://surreal-adventures.herokuapp.com/v1/graphql",
     headers,
