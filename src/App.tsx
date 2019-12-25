@@ -48,12 +48,6 @@ setupConfig({
   mode: "ios",
 })
 
-interface IAuthState {
-  status: string
-  user?: any
-  token?: string
-}
-
 const App: React.FC = () => {
   const [user] = useAuthState(auth)
   const [userToken, setUserToken] = useState<string | null>(null)
@@ -100,11 +94,7 @@ const App: React.FC = () => {
             exact={true}
           />
           <Route path="/home" component={Home} exact={true} />
-          <Route
-            path="/login"
-            render={() => (user ? <Redirect to="/app" /> : <Login />)}
-            exact={true}
-          />
+          <Route path="/login" render={() => <Login />} exact={true} />
           <Route path="/app" component={AppPage} />
           <Route path="/welcome" component={Welcome} />
         </IonReactRouter>

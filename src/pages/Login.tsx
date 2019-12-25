@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 
 import { useSpring, animated } from "react-spring"
-import { Link } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
 
 import {
   IonContent,
@@ -21,6 +21,9 @@ import {
 } from "../scripts/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
 
+import gql from "graphql-tag"
+import { useQuery } from "@apollo/react-hooks"
+
 import Typist from "react-typist"
 import SvgLines from "react-mt-svg-lines"
 
@@ -33,10 +36,31 @@ import { ReactComponent as DreamerTraceSvg } from "../components/assets/dreamer/
 import { logoFacebook, logoGoogle } from "ionicons/icons"
 import { segment } from "../scripts/segment"
 
+const GET_USERNAME_FROM_EMAIL = gql`
+  query getUserEntry($email: String!) {
+    users(where: { email: { _eq: $email } }) {
+      username
+    }
+  }
+`
+
 const Page: React.FC = () => {
-  const [, initialising] = useAuthState(auth)
+  const [user, initialising] = useAuthState(auth)
   const [menuOpen, setMenuOpen] = useState(false)
   const dreamerLoaded = useRef(false)
+
+  const { loading, data } = useQuery(GET_USERNAME_FROM_EMAIL, {
+    variables: { email: user ? user.email : "" },
+  })
+
+  let username: string | null
+  if (!loading && data && data.users.length === 1) {
+    username = data.users[0].username
+  } else if (data) {
+    username = null
+  } else {
+    username = ""
+  }
 
   const loginWithGoogle = () => auth.signInWithRedirect(googleProvider)
   const loginWithFacebook = () => auth.signInWithRedirect(facebookProvider)
@@ -74,9 +98,10 @@ const Page: React.FC = () => {
     segment.page()
   }, [])
 
-  return (
+  const isInitialising = initialising || loading || username === ""
+
+  return isInitialising || !user ? (
     <IonPage>
-      {/* HOME HEADER SECTION */}
       <IonHeader>
         <IonToolbar>
           <Link to="/home" style={{ textDecoration: "none" }}>
@@ -102,7 +127,6 @@ const Page: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      {/* HOME CONTENT SECTION */}
       <IonContent>
         <MenuOverlay menuOpen={menuOpen} />
         <div className="text-gray-300 stroke-current relative mx-12 mt-12">
@@ -118,7 +142,6 @@ const Page: React.FC = () => {
           </div>
         </div>
 
-        {/* SECTION ONE */}
         <div className="absolute bottom-0 inset-x-0 flex flex-col mb-16 mx-8">
           <IonButton
             size="large"
@@ -146,9 +169,17 @@ const Page: React.FC = () => {
             </div>
           </IonButton>
         </div>
-        <IonLoading isOpen={initialising} translucent />
+        {isInitialising ? (
+          <IonLoading isOpen={isInitialising} translucent />
+        ) : (
+          <></>
+        )}
       </IonContent>
     </IonPage>
+  ) : username ? (
+    <Redirect to="/app" />
+  ) : (
+    <Redirect to="/welcome" />
   )
 }
 

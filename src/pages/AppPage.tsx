@@ -46,12 +46,14 @@ const ProtectedRoute: React.FC<any> = ({ component: Component, ...rest }) => {
     username = ""
   }
 
+  const isInitialising = initialising || loading || username === ""
+
   return (
     <Route
       {...rest}
       render={props => {
-        return user || initialising || loading ? (
-          initialising || loading || username === "" ? (
+        return user || isInitialising ? (
+          isInitialising ? (
             // if loading
             <>
               <Component {...props} />
