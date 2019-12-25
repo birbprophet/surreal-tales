@@ -20,6 +20,7 @@
     "ionicons": "^4.6.3",
     "logrocket": "^1.0.5",
     "react": "^16.10.2",
+    "react-activity-feed": "^0.9.25",
     "react-dom": "^16.10.2",
     "react-firebase-hooks": "^2.1.1",
     "react-mt-svg-lines": "^0.9.1",
