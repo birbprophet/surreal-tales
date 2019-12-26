@@ -95,7 +95,7 @@ const ReactComponent: React.FC = () => {
         />
         <Route
           path="/app"
-          render={() => <Redirect to="/app/tab1" />}
+          render={() => <Redirect to="/app/profile" />}
           exact={true}
         />
       </IonRouterOutlet>

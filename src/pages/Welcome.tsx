@@ -57,7 +57,6 @@ const Page: React.FC = () => {
   const [user, initialising] = useAuthState(auth)
   const [inputUsername, setInputUsername] = useState<string>("")
   const [invalidMessage, setInvalidMessage] = useState<string | null>("")
-  const [streamLoading, setStreamLoading] = useState(false)
 
   const { loading, data } = useQuery(GET_USERNAME, {
     variables: { username: inputUsername },
@@ -70,7 +69,6 @@ const Page: React.FC = () => {
 
   const handleConfirmUsername = () => {
     if (user) {
-      setStreamLoading(true)
       fetch(STREAM_TOKEN_GENERATION_URL, {
         method: "POST",
         headers: {
@@ -90,7 +88,6 @@ const Page: React.FC = () => {
           })
         )
         .catch(e => console.log(e))
-      setStreamLoading(false)
     } else {
       setInvalidMessage("You are not logged in")
     }
@@ -106,7 +103,7 @@ const Page: React.FC = () => {
   }
 
   const usernameIsAvailable = username === null
-  const isInitialising = initialising || insertLoading || streamLoading
+  const isInitialising = initialising || insertLoading
 
   if (
     !inputUsername.match(/^[a-z0-9_][a-z0-9._]+[a-z0-9_]$/) ||
@@ -171,80 +168,76 @@ const Page: React.FC = () => {
       <IonContent>
         <IonSlides>
           <IonSlide>
-            <div className="flex content-center flex-wrap h-screen mx-8">
-              <div>
-                <WelcomeSvg className="w-full h-48" />
-                <div className="text-4xl font-rounded font-semibold leading-normal text-center mb-12 mt-8 h-24">
-                  <Typist
-                    startDelay={0}
-                    cursor={{
-                      show: true,
-                      blink: true,
-                      element: "_",
-                      hideWhenDone: true,
-                      hideWhenDoneDelay: 0,
-                    }}
-                  >
-                    Hello!
-                    <Typist.Delay ms={1000} />
-                    {Array.prototype.map.call("Hello!", char => (
-                      <Typist.Backspace key={char} count={1} delay={50} />
-                    ))}
-                    Welcome to
-                    <br />
-                    <span className="text-5xl">Surreal Tales</span>
-                  </Typist>
-                </div>
+            <div className="flex flex-col mt-24">
+              <WelcomeSvg className="w-full h-40" />
+              <div className="text-4xl font-rounded font-semibold leading-normal text-center mb-12 mt-8">
+                <Typist
+                  startDelay={0}
+                  cursor={{
+                    show: true,
+                    blink: true,
+                    element: "_",
+                    hideWhenDone: true,
+                    hideWhenDoneDelay: 0,
+                  }}
+                >
+                  Hello!
+                  <Typist.Delay ms={1000} />
+                  {Array.prototype.map.call("Hello!", char => (
+                    <Typist.Backspace key={char} count={1} delay={50} />
+                  ))}
+                  Welcome to
+                  <br />
+                  <span className="text-5xl">Surreal Tales</span>
+                </Typist>
               </div>
             </div>
           </IonSlide>
           <IonSlide>
-            <div className="flex content-center flex-wrap h-screen mx-8">
-              <div>
-                <UsernameSvg className="w-full h-48" />
-                <div className="text-4xl font-rounded font-semibold leading-normal text-center mb-12 mt-8 h-24">
-                  Pick a username:
-                  <div className="tracking-wide border-gray-400 -mt-2">
-                    <IonInput
-                      value={inputUsername === "" ? "" : "@" + inputUsername}
-                      placeholder={"@username"}
-                      debounce={500}
-                      inputmode={"text"}
-                      maxlength={13}
-                      minlength={1}
-                      onIonChange={event => {
-                        const newInputUsername = (event.detail.value || "")
-                          .replace("@", "")
-                          .toLowerCase()
-                        if (newInputUsername !== inputUsername) {
-                          setInputUsername(newInputUsername)
-                        }
-                      }}
-                    />
-                  </div>
-                  {invalidMessage ? (
-                    <div className="text-xl text-red-500 mx-10">
-                      {invalidMessage}
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {invalidMessage === null ? (
-                    <div className="mt-4">
-                      <IonButton
-                        size="large"
-                        expand="block"
-                        onClick={handleConfirmUsername}
-                      >
-                        <div className="text-lg font-rounded font-semibold">
-                          CONFIRM USERNAME
-                        </div>
-                      </IonButton>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
+            <div className="flex flex-col mt-24">
+              <UsernameSvg className="w-full h-40" />
+              <div className="text-4xl font-rounded font-semibold leading-normal text-center mb-12 mt-8">
+                Pick a username:
+                <div className="tracking-wide border-gray-400 -mt-2">
+                  <IonInput
+                    value={inputUsername === "" ? "" : "@" + inputUsername}
+                    placeholder={"@username"}
+                    debounce={0}
+                    inputmode={"text"}
+                    maxlength={13}
+                    minlength={1}
+                    onIonChange={event => {
+                      const newInputUsername = (event.detail.value || "")
+                        .replace("@", "")
+                        .toLowerCase()
+                      if (newInputUsername !== inputUsername) {
+                        setInputUsername(newInputUsername)
+                      }
+                    }}
+                  />
                 </div>
+                {invalidMessage ? (
+                  <div className="text-xl text-red-500 mx-10">
+                    {invalidMessage}
+                  </div>
+                ) : (
+                  <></>
+                )}
+                {invalidMessage === null ? (
+                  <div className="mt-4 mx-8">
+                    <IonButton
+                      size="large"
+                      expand="block"
+                      onClick={handleConfirmUsername}
+                    >
+                      <div className="text-lg font-rounded font-semibold">
+                        CONFIRM USERNAME
+                      </div>
+                    </IonButton>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </IonSlide>
