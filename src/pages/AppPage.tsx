@@ -16,11 +16,12 @@ import { auth } from "../scripts/firebase"
 import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
 
-import { apps, flash, send } from "ionicons/icons"
+import { apps, flash, contact } from "ionicons/icons"
 
 import Tab1 from "./Tab1"
 import Tab2 from "./Tab2"
 import Profile from "./Profile"
+import Settings from "./Settings"
 import Details from "./Details"
 
 const GET_USERNAME_FROM_EMAIL = gql`
@@ -86,7 +87,12 @@ const ReactComponent: React.FC = () => {
         <ProtectedRoute path="/app/tab1" component={Tab1} exact={true} />
         <ProtectedRoute path="/app/tab2" component={Tab2} exact={true} />
         <ProtectedRoute path="/app/tab2/details" component={Details} />
-        <ProtectedRoute path="/app/profile" component={Profile} />
+        <ProtectedRoute path="/app/profile" component={Profile} exact={true} />
+        <ProtectedRoute
+          path="/app/profile/settings"
+          component={Settings}
+          exact={true}
+        />
         <Route
           path="/app"
           render={() => <Redirect to="/app/tab1" />}
@@ -103,7 +109,7 @@ const ReactComponent: React.FC = () => {
           <IonLabel>Tab Two</IonLabel>
         </IonTabButton>
         <IonTabButton tab="profile" href="/app/profile">
-          <IonIcon icon={send} />
+          <IonIcon icon={contact} />
           <IonLabel>Profile</IonLabel>
         </IonTabButton>
       </IonTabBar>

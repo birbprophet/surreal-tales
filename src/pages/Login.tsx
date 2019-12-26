@@ -98,7 +98,7 @@ const Page: React.FC = () => {
     segment.page()
   }, [])
 
-  const isInitialising = initialising || loading || username === ""
+  const isInitialising = initialising
 
   return isInitialising || !user ? (
     <IonPage>
@@ -176,10 +176,8 @@ const Page: React.FC = () => {
         )}
       </IonContent>
     </IonPage>
-  ) : username ? (
-    <Redirect to="/app" />
   ) : (
-    <Redirect to="/welcome" />
+    <Redirect to="/app" />
   )
 }
 

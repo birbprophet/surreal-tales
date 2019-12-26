@@ -15,9 +15,11 @@
     "@types/react-router-dom": "^5.1.0",
     "@types/react-typist": "^2.0.1",
     "apollo-boost": "^0.4.7",
+    "axios": "^0.19.0",
     "firebase": "^7.6.1",
     "graphql": "^14.5.8",
     "ionicons": "^4.6.3",
+    "isomorphic-unfetch": "^3.0.0",
     "logrocket": "^1.0.5",
     "react": "^16.10.2",
     "react-activity-feed": "^0.9.25",
@@ -32,6 +34,7 @@
     "react-typist-loop": "0.0.5",
     "typeface-asap": "0.0.69",
     "typeface-roboto": "0.0.75",
+    "unfetch": "^4.1.0",
     "use-is-in-viewport": "^1.0.7"
   },
   "scripts": {

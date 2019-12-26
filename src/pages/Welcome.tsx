@@ -20,6 +20,11 @@ import { useQuery, useMutation } from "@apollo/react-hooks"
 import { ReactComponent as WelcomeSvg } from "../components/assets/welcome/welcome.svg"
 import { ReactComponent as UsernameSvg } from "../components/assets/username/username.svg"
 
+import fetch from "isomorphic-unfetch"
+
+const STREAM_TOKEN_GENERATION_URL =
+  "https://us-central1-surreal-tales.cloudfunctions.net/generateStreamToken"
+
 const GET_USERNAME = gql`
   query getUsername($username: String!) {
     users(where: { username: { _eq: $username } }) {
@@ -33,12 +38,14 @@ const ADD_USER_ENTRY = gql`
     $username: String!
     $display_name: String!
     $email: String!
+    $stream_token: String!
   ) {
     insert_users(
       objects: {
         username: $username
         display_name: $display_name
         email: $email
+        stream_token: $stream_token
       }
     ) {
       affected_rows
@@ -50,6 +57,7 @@ const Page: React.FC = () => {
   const [user, initialising] = useAuthState(auth)
   const [inputUsername, setInputUsername] = useState<string>("")
   const [invalidMessage, setInvalidMessage] = useState<string | null>("")
+  const [streamLoading, setStreamLoading] = useState(false)
 
   const { loading, data } = useQuery(GET_USERNAME, {
     variables: { username: inputUsername },
@@ -62,13 +70,27 @@ const Page: React.FC = () => {
 
   const handleConfirmUsername = () => {
     if (user) {
-      addUserEntry({
-        variables: {
-          username: inputUsername,
-          display_name: user.displayName,
-          email: user.email,
+      setStreamLoading(true)
+      fetch(STREAM_TOKEN_GENERATION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ userId: user.uid }),
       })
+        .then(response => response.json())
+        .then(data =>
+          addUserEntry({
+            variables: {
+              username: inputUsername,
+              display_name: user.displayName,
+              email: user.email,
+              stream_token: data.token,
+            },
+          })
+        )
+        .catch(e => console.log(e))
+      setStreamLoading(false)
     } else {
       setInvalidMessage("You are not logged in")
     }
@@ -84,7 +106,7 @@ const Page: React.FC = () => {
   }
 
   const usernameIsAvailable = username === null
-  const isInitialising = initialising || insertLoading
+  const isInitialising = initialising || insertLoading || streamLoading
 
   if (
     !inputUsername.match(/^[a-z0-9_][a-z0-9._]+[a-z0-9_]$/) ||
@@ -136,7 +158,7 @@ const Page: React.FC = () => {
     }
   }
 
-  return initialising || !user ? (
+  return initialising ? (
     <IonPage>
       <IonContent>
         <IonLoading isOpen={initialising} translucent />

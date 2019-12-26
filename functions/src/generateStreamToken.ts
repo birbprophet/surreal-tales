@@ -1,18 +1,22 @@
-import * as functions from "firebase-functions"
-var stream = require("getstream")
+import * as cors from "cors"
+const functions = require("firebase-functions")
+const stream = require("getstream")
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
+const corsHandler = cors({ origin: true })
+
+const client = stream.connect(
+  "zvqc7wggt7k9",
+  "24q9r5hu9gxakfsae9ubnue7tde5z7x5fffz6z6hjb5g28v5tzdt3m88xy2ycmaf"
+)
+
 export const generateStreamToken = functions.https.onRequest(
-  (request, response) => {
-    const user_id = request.body.user_id
-    let client = stream.connect(
-      "zvqc7wggt7k9",
-      "24q9r5hu9gxakfsae9ubnue7tde5z7x5fffz6z6hjb5g28v5tzdt3m88xy2ycmaf"
-    )
-    let userToken = client.createUserToken(user_id)
+  (req: any, res: any) => {
+    corsHandler(req, res, () => {})
 
-    response.send(userToken)
+    const token = client.createUserToken(req.body.userId)
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    res.header("Access-Control-Allow-Headers", "Content-Type")
+    res.send({ token })
   }
 )
