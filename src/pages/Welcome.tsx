@@ -65,10 +65,14 @@ const Page: React.FC = () => {
   const [user, initialising] = useAuthState(auth)
   const [inputUsername, setInputUsername] = useState<string>("")
   const [invalidMessage, setInvalidMessage] = useState<string | null>("")
+  const [completed, setCompleted] = useState(false)
 
-  const { loading, data } = useQuery(GET_USERNAME, {
-    variables: { username: inputUsername },
-  })
+  const { loading: usernameLoading, data: usernameData } = useQuery(
+    GET_USERNAME,
+    {
+      variables: { username: inputUsername },
+    }
+  )
 
   const { loading: userLoading, data: userData } = useQuery(
     GET_USERNAME_FROM_EMAIL,
@@ -77,10 +81,7 @@ const Page: React.FC = () => {
     }
   )
 
-  const [
-    addUserEntry,
-    { data: insertData, loading: insertLoading },
-  ] = useMutation(ADD_USER_ENTRY)
+  const [addUserEntry, { loading: insertLoading }] = useMutation(ADD_USER_ENTRY)
 
   const handleConfirmUsername = () => {
     if (user) {
@@ -103,21 +104,22 @@ const Page: React.FC = () => {
           })
         )
         .catch(e => console.log(e))
+      setCompleted(true)
     } else {
       setInvalidMessage("You are not logged in")
     }
   }
 
-  let username: string | null
-  if (!loading && data && data.users.length === 1) {
-    username = data.users[0].username
-  } else if (data) {
-    username = null
-  } else {
-    username = ""
-  }
+  const usernameExists =
+    !userLoading &&
+    userData &&
+    userData.users &&
+    userData.users.length > 0 &&
+    userData.users[0].username
 
-  const usernameIsAvailable = username === null
+  const usernameIsAvailable =
+    !usernameLoading && usernameData && usernameData.users.length === 0
+
   const isInitialising = initialising || insertLoading
 
   if (
@@ -170,20 +172,13 @@ const Page: React.FC = () => {
     }
   }
 
-  const usernameExists =
-    !userLoading &&
-    userData &&
-    userData.users &&
-    userData.users.length > 0 &&
-    userData.users[0].username
-
   return isInitialising ? (
     <IonPage>
       <IonContent>
         <IonLoading isOpen={initialising} translucent />
       </IonContent>
     </IonPage>
-  ) : insertData ? (
+  ) : usernameExists || completed ? (
     <Redirect to="/app" />
   ) : (
     <IonPage>

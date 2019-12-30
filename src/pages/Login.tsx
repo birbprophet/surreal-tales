@@ -3,9 +3,6 @@ import React, { useState, useEffect, useRef } from "react"
 import { useSpring, animated } from "react-spring"
 import { Link, Redirect } from "react-router-dom"
 
-import gql from "graphql-tag"
-import { useQuery } from "@apollo/react-hooks"
-
 import {
   IonContent,
   IonHeader,
