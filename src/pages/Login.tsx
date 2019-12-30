@@ -3,6 +3,9 @@ import React, { useState, useEffect, useRef } from "react"
 import { useSpring, animated } from "react-spring"
 import { Link, Redirect } from "react-router-dom"
 
+import gql from "graphql-tag"
+import { useQuery } from "@apollo/react-hooks"
+
 import {
   IonContent,
   IonHeader,
@@ -21,9 +24,6 @@ import {
 } from "../scripts/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
 
-import gql from "graphql-tag"
-import { useQuery } from "@apollo/react-hooks"
-
 import Typist from "react-typist"
 import SvgLines from "react-mt-svg-lines"
 
@@ -36,31 +36,10 @@ import { ReactComponent as DreamerTraceSvg } from "../components/assets/dreamer/
 import { logoFacebook, logoGoogle } from "ionicons/icons"
 import { segment } from "../scripts/segment"
 
-const GET_USERNAME_FROM_EMAIL = gql`
-  query getUserEntry($email: String!) {
-    users(where: { email: { _eq: $email } }) {
-      username
-    }
-  }
-`
-
 const Page: React.FC = () => {
   const [user, initialising] = useAuthState(auth)
   const [menuOpen, setMenuOpen] = useState(false)
   const dreamerLoaded = useRef(false)
-
-  const { loading, data } = useQuery(GET_USERNAME_FROM_EMAIL, {
-    variables: { email: user ? user.email : "" },
-  })
-
-  let username: string | null
-  if (!loading && data && data.users.length === 1) {
-    username = data.users[0].username
-  } else if (data) {
-    username = null
-  } else {
-    username = ""
-  }
 
   const loginWithGoogle = () => auth.signInWithRedirect(googleProvider)
   const loginWithFacebook = () => auth.signInWithRedirect(facebookProvider)

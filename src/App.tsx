@@ -31,6 +31,7 @@ import "@ionic/react/css/display.css"
 /* Theme variables */
 import "./theme/variables.css"
 import "typeface-roboto"
+import "typeface-roboto-mono"
 import "typeface-asap"
 import "./css/index.css"
 import "./css/fonts.css"

@@ -16,13 +16,12 @@ import { auth } from "../scripts/firebase"
 import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
 
-import { apps, flash, contact } from "ionicons/icons"
+import { home, addCircle, contact } from "ionicons/icons"
 
-import Tab1 from "./Tab1"
-import Tab2 from "./Tab2"
+import Feed from "./Feed"
+import Create from "./Create"
 import Profile from "./Profile"
 import Settings from "./Settings"
-import Details from "./Details"
 
 const GET_USERNAME_FROM_EMAIL = gql`
   query getUserEntry($email: String!) {
@@ -34,20 +33,20 @@ const GET_USERNAME_FROM_EMAIL = gql`
 
 const ProtectedRoute: React.FC<any> = ({ component: Component, ...rest }) => {
   const [user, initialising] = useAuthState(auth)
-  const { loading, data } = useQuery(GET_USERNAME_FROM_EMAIL, {
-    variables: { email: user ? user.email : "" },
-  })
+  const { loading: userLoading, data: userData } = useQuery(
+    GET_USERNAME_FROM_EMAIL,
+    {
+      variables: { email: user ? user.email : "" },
+    }
+  )
 
-  let username: string | null
-  if (!loading && data && data.users.length === 1) {
-    username = data.users[0].username
-  } else if (data) {
-    username = null
-  } else {
-    username = ""
-  }
-
-  const isInitialising = initialising || loading || username === ""
+  const isInitialising = initialising || userLoading
+  const usernameExists =
+    !userLoading &&
+    userData &&
+    userData.users &&
+    userData.users.length > 0 &&
+    userData.users[0].username
 
   return (
     <Route
@@ -60,7 +59,7 @@ const ProtectedRoute: React.FC<any> = ({ component: Component, ...rest }) => {
               <Component {...props} />
               <IonLoading isOpen={true} translucent />
             </>
-          ) : username ? (
+          ) : user && usernameExists ? (
             // if loaded and user exists
             <Component {...props} />
           ) : (
@@ -84,9 +83,8 @@ const ReactComponent: React.FC = () => {
   return (
     <IonTabs>
       <IonRouterOutlet>
-        <ProtectedRoute path="/app/tab1" component={Tab1} exact={true} />
-        <ProtectedRoute path="/app/tab2" component={Tab2} exact={true} />
-        <ProtectedRoute path="/app/tab2/details" component={Details} />
+        <ProtectedRoute path="/app/feed" component={Feed} exact={true} />
+        <ProtectedRoute path="/app/create" component={Create} exact={true} />
         <ProtectedRoute path="/app/profile" component={Profile} exact={true} />
         <ProtectedRoute
           path="/app/profile/settings"
@@ -100,16 +98,16 @@ const ReactComponent: React.FC = () => {
         />
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
-        <IonTabButton tab="tab1" href="/app/tab1">
-          <IonIcon icon={flash} />
-          <IonLabel>Tab One</IonLabel>
+        <IonTabButton tab="feed" href="/app/feed">
+          <IonIcon icon={home.md} />
+          <IonLabel>Feed</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="tab2" href="/app/tab2">
-          <IonIcon icon={apps} />
-          <IonLabel>Tab Two</IonLabel>
+        <IonTabButton tab="create" href="/app/create">
+          <IonIcon icon={addCircle.md} />
+          <IonLabel>Create</IonLabel>
         </IonTabButton>
         <IonTabButton tab="profile" href="/app/profile">
-          <IonIcon icon={contact} />
+          <IonIcon icon={contact.md} />
           <IonLabel>Profile</IonLabel>
         </IonTabButton>
       </IonTabBar>

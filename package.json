@@ -34,6 +34,7 @@
     "react-typist-loop": "0.0.5",
     "typeface-asap": "0.0.69",
     "typeface-roboto": "0.0.75",
+    "typeface-roboto-mono": "0.0.75",
     "unfetch": "^4.1.0",
     "use-is-in-viewport": "^1.0.7"
   },

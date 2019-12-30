@@ -53,6 +53,14 @@ const ADD_USER_ENTRY = gql`
   }
 `
 
+const GET_USERNAME_FROM_EMAIL = gql`
+  query getUserEntry($email: String!) {
+    users(where: { email: { _eq: $email } }) {
+      username
+    }
+  }
+`
+
 const Page: React.FC = () => {
   const [user, initialising] = useAuthState(auth)
   const [inputUsername, setInputUsername] = useState<string>("")
@@ -61,6 +69,13 @@ const Page: React.FC = () => {
   const { loading, data } = useQuery(GET_USERNAME, {
     variables: { username: inputUsername },
   })
+
+  const { loading: userLoading, data: userData } = useQuery(
+    GET_USERNAME_FROM_EMAIL,
+    {
+      variables: { email: user ? user.email : "" },
+    }
+  )
 
   const [
     addUserEntry,
@@ -155,7 +170,14 @@ const Page: React.FC = () => {
     }
   }
 
-  return initialising ? (
+  const usernameExists =
+    !userLoading &&
+    userData &&
+    userData.users &&
+    userData.users.length > 0 &&
+    userData.users[0].username
+
+  return isInitialising ? (
     <IonPage>
       <IonContent>
         <IonLoading isOpen={initialising} translucent />
@@ -193,6 +215,7 @@ const Page: React.FC = () => {
               </div>
             </div>
           </IonSlide>
+
           <IonSlide>
             <div className="flex flex-col mt-24">
               <UsernameSvg className="w-full h-40" />
