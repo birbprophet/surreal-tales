@@ -15,35 +15,21 @@ import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../scripts/firebase"
 import { segment } from "../scripts/segment"
 
-import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
 
-const GET_USER_FROM_UID = gql`
-  query getUserEntry($user_id: String!) {
-    users(where: { user_id: { _eq: $user_id } }) {
-      username
-      email
-      display_name
-      profile_picture_url
-      bio
-      stream_token
-    }
-  }
-`
-
-interface IUserEntry {
-  username: string
-  email: string
-  display_name?: string
-  profile_picture_url?: string
-  bio?: string
-}
+import { GET_USER_ENTRY_FROM_UID } from "../graphql/queries"
+import { IUserEntry } from "../graphql/interfaces"
 
 const ReactComponent: React.FC = () => {
   const [user] = useAuthState(auth)
-  const { data: userData } = useQuery(GET_USER_FROM_UID, {
+  const { data: userData } = useQuery(GET_USER_ENTRY_FROM_UID, {
     variables: { user_id: user ? user.uid : "" },
   })
+
+  const userEntry: IUserEntry | null =
+    userData && userData.users && userData.users.length > 0
+      ? userData.users[0]
+      : null
 
   useEffect(() => {
     segment.page()

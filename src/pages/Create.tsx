@@ -1,124 +1,91 @@
 import React, { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import {
-  IonHeader,
-  IonToolbar,
-  IonPage,
-  IonContent,
-  IonItem,
-  IonIcon,
-  IonInput,
-  IonCard,
-} from "@ionic/react"
-
-import { search } from "ionicons/icons"
+import { IonHeader, IonToolbar, IonPage, IonContent } from "@ionic/react"
 
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../scripts/firebase"
 import { segment } from "../scripts/segment"
 
-import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
 
-const GET_USER_FROM_UID = gql`
-  query getUserEntry($id: String!) {
-    users(where: { id: { _eq: $id } }) {
-      username
-      email
-      display_name
-      profile_picture_url
-      bio
-      stream_token
-    }
-  }
-`
+import Typist from "react-typist"
 
-const GET_CURRENT_SESSION = gql`
-  query getCurrentSession($user_id: String!) {
-    sessions(
-      limit: 1
-      where: {
-        user_id: { _eq: $user_id }
-        in_progress: { _eq: true }
-        cancelled: { _eq: false }
-      }
-    ) {
-      character_bio
-      character_name
-      story_setting
-      interactions {
-        option {
-          text
-          is_user_input
-        }
-        text
-        type
-        options {
-          text
-          is_user_input
-        }
-      }
-    }
-  }
-`
+import CreateLoader from "../components/CreateLoader"
 
-interface IUserEntry {
-  username: string
-  email: string
-  display_name?: string
-  profile_picture_url?: string
-  bio?: string
+import {
+  GET_USER_ENTRY_FROM_UID,
+  GET_CURRENT_SESSION_FROM_UID,
+  GET_ALL_OPEN_SESSION_ROOM_CODE,
+} from "../graphql/queries"
+import { IUserEntry } from "../graphql/interfaces"
+
+import { generateRoomCode } from "../scripts/interactions"
+
+const ActionButton = ({
+  text,
+  handleClick,
+  hidden,
+}: {
+  text: string
+  handleClick: any
+  hidden?: boolean
+}) => {
+  return (
+    <div
+      className={
+        "bg-gray-400 text-gray-900 h-12 text-center font-mono rounded-lg mx-4 mt-4 font-semibold " +
+        (hidden ? "hidden" : "")
+      }
+      style={{ lineHeight: "48px" }}
+      onClick={handleClick}
+    >
+      {text}
+    </div>
+  )
 }
 
-interface ISessionEntry {
-  character_bio: string | null
-  character_name: string | null
-  story_setting: string | null
-  interactions: {
-    option: {
-      text: string
-      is_user_input: boolean
-    } | null
-    text: string
-    type: string
-    options: {
-      text: string
-      is_user_input: boolean
+const Page: React.FC = () => {
+  const [user] = useAuthState(auth)
+  const [initialiseTextCompleted, setInitialiseTextCompleted] = useState(false)
+  const [joinAdventureChoice, setJoinAdventureChoice] = useState<string | null>(
+    null
+  )
+  const { loading: userLoading, data: userData } = useQuery(
+    GET_USER_ENTRY_FROM_UID,
+    {
+      variables: { user_id: user ? user.uid : "" },
     }
-  }[]
-}
-
-const ReactComponent: React.FC = () => {
-  const [user, initialising] = useAuthState(auth)
-  const [sessionLoaded, setSessionLoaded] = useState(false)
-  const { data: userData, loading: userLoading } = useQuery(GET_USER_FROM_UID, {
-    variables: { id: user ? user.uid : "" },
-  })
-
-  const { data: sessionData } = useQuery(GET_CURRENT_SESSION, {
-    variables: { user_id: user ? user.uid : "" },
-  })
+  )
+  const { loading: sessionLoading, data: sessionData } = useQuery(
+    GET_CURRENT_SESSION_FROM_UID,
+    {
+      variables: { user_id: user ? user.uid : "" },
+    }
+  )
+  const { loading: roomCodesLoading, data: roomCodesData } = useQuery(
+    GET_ALL_OPEN_SESSION_ROOM_CODE
+  )
 
   useEffect(() => {
     segment.page()
   }, [])
 
-  if (userData && sessionData && sessionLoaded !== true) {
-    setSessionLoaded(true)
-  }
+  const userEntry: IUserEntry | null =
+    userData && userData.users && userData.users.length > 0
+      ? userData.users[0]
+      : null
 
-  const userEntry: IUserEntry =
-    userData && userData.users ? userData.users[0] : null
-
-  const sessionEntry: ISessionEntry =
+  const sessionEntry =
     sessionData && sessionData.sessions && sessionData.sessions.length > 0
       ? sessionData.sessions[0]
       : null
 
-  if (!sessionEntry) {
-  }
+  const roomCodes =
+    roomCodesData && roomCodesData.sessions
+      ? roomCodesData.sessions.map((item: any) => item.room_code)
+      : null
 
-  const isInitialising = initialising
+  const isLoading = userLoading || sessionLoading || roomCodesLoading
+  console.log(roomCodes)
 
   return (
     <IonPage>
@@ -132,21 +99,88 @@ const ReactComponent: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <div className="flex flex-col h-full">
-          <div className="bg-black flex-1 p-4">
-            {sessionLoaded ? (
-              <div>
-                <div className="text-left align top font-mono">
-                  Hello, {userEntry.display_name}. Before we begin, what is the
-                  name of your character?
-                </div>
-              </div>
-            ) : (
-              <></>
-            )}
+        <div className="flex flex-col h-full relative">
+          <div className="bg-black flex-1 px-4 py-6">
+            <div className="text-left align top font-mono">
+              {isLoading ? (
+                <CreateLoader isLoading={isLoading} />
+              ) : userEntry && !sessionEntry ? (
+                <span>
+                  <Typist
+                    startDelay={1000}
+                    cursor={{
+                      show: true,
+                      blink: true,
+                      element: "_",
+                      hideWhenDone: joinAdventureChoice === null,
+                    }}
+                    onTypingDone={() => setInitialiseTextCompleted(true)}
+                  >
+                    Hello {userEntry.display_name}!
+                    <Typist.Delay ms={1000} />
+                    <br />
+                    Would you like to start a new adventure or join an existing
+                    one?
+                  </Typist>
+                </span>
+              ) : (
+                <></>
+              )}
+              {joinAdventureChoice === "join" ? (
+                <span>
+                  <br />> Join an existing adventure
+                  <Typist
+                    startDelay={1000}
+                    cursor={{
+                      show: true,
+                      blink: true,
+                      element: "_",
+                    }}
+                  >
+                    Please enter the room code of the adventure you would like
+                    to join:
+                    <br />
+                  </Typist>
+                </span>
+              ) : (
+                <></>
+              )}
+              {joinAdventureChoice === "create" ? (
+                <span>
+                  <br />> Create a new adventure
+                  <Typist
+                    startDelay={1000}
+                    cursor={{
+                      show: true,
+                      blink: true,
+                      element: "_",
+                    }}
+                  >
+                    Creating a new adventure...
+                  </Typist>
+                </span>
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
-          <div className="bg-gray-800 h-48">
-            <IonCard></IonCard>
+          <div className="bg-gray-800 h-48 absolute bottom-0 inset-x-0 rounded-t-lg">
+            <div>
+              <ActionButton
+                text="Create a new adventure"
+                handleClick={() => setJoinAdventureChoice("create")}
+                hidden={
+                  !initialiseTextCompleted && joinAdventureChoice === null
+                }
+              />
+              <ActionButton
+                text="Join an existing adventure"
+                handleClick={() => setJoinAdventureChoice("join")}
+                hidden={
+                  !initialiseTextCompleted && joinAdventureChoice === null
+                }
+              />
+            </div>
           </div>
         </div>
       </IonContent>
@@ -154,4 +188,4 @@ const ReactComponent: React.FC = () => {
   )
 }
 
-export default ReactComponent
+export default Page

@@ -14,7 +14,7 @@ import Typist from "react-typist"
 
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../scripts/firebase"
-import gql from "graphql-tag"
+
 import { useQuery, useMutation } from "@apollo/react-hooks"
 
 import { ReactComponent as WelcomeSvg } from "../components/assets/welcome/welcome.svg"
@@ -22,44 +22,13 @@ import { ReactComponent as UsernameSvg } from "../components/assets/username/use
 
 import fetch from "isomorphic-unfetch"
 
-const STREAM_TOKEN_GENERATION_URL =
-  "https://us-central1-surreal-tales.cloudfunctions.net/generateStreamToken"
+import { STREAM_TOKEN_GENERATION_URL } from "../api/streamApis"
+import {
+  GET_USERNAME_FROM_USERNAME,
+  GET_USERNAME_FROM_EMAIL,
+} from "../graphql/queries"
 
-const GET_USERNAME = gql`
-  query getUsername($username: String!) {
-    users(where: { username: { _eq: $username } }) {
-      username
-    }
-  }
-`
-
-const ADD_USER_ENTRY = gql`
-  mutation addUserEntry(
-    $username: String!
-    $display_name: String!
-    $email: String!
-    $stream_token: String!
-  ) {
-    insert_users(
-      objects: {
-        username: $username
-        display_name: $display_name
-        email: $email
-        stream_token: $stream_token
-      }
-    ) {
-      affected_rows
-    }
-  }
-`
-
-const GET_USERNAME_FROM_EMAIL = gql`
-  query getUserEntry($email: String!) {
-    users(where: { email: { _eq: $email } }) {
-      username
-    }
-  }
-`
+import { ADD_USER_ENTRY } from "../graphql/mutations"
 
 const Page: React.FC = () => {
   const [user, initialising] = useAuthState(auth)
@@ -68,7 +37,7 @@ const Page: React.FC = () => {
   const [completed, setCompleted] = useState(false)
 
   const { loading: usernameLoading, data: usernameData } = useQuery(
-    GET_USERNAME,
+    GET_USERNAME_FROM_USERNAME,
     {
       variables: { username: inputUsername },
     }

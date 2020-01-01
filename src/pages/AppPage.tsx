@@ -13,7 +13,6 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../scripts/firebase"
 
-import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
 
 import { home, addCircle, contact } from "ionicons/icons"
@@ -23,13 +22,7 @@ import Create from "./Create"
 import Profile from "./Profile"
 import Settings from "./Settings"
 
-const GET_USERNAME_FROM_EMAIL = gql`
-  query getUserEntry($email: String!) {
-    users(where: { email: { _eq: $email } }) {
-      username
-    }
-  }
-`
+import { GET_USERNAME_FROM_EMAIL } from "../graphql/queries"
 
 const ProtectedRoute: React.FC<any> = ({ component: Component, ...rest }) => {
   const [user, initialising] = useAuthState(auth)

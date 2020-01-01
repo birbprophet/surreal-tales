@@ -1,62 +1,21 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 import {
   IonHeader,
   IonToolbar,
   IonPage,
-  IonTitle,
   IonContent,
-  IonButton,
-  IonButtons,
-  IonAvatar,
   IonItem,
-  IonLabel,
   IonIcon,
-  IonActionSheet,
   IonList,
 } from "@ionic/react"
 
 import { arrowBack, lock, key, logOut } from "ionicons/icons"
 
-import { useAuthState } from "react-firebase-hooks/auth"
-import { auth, analytics } from "../scripts/firebase"
+import { auth } from "../scripts/firebase"
 import { segment } from "../scripts/segment"
 
-import gql from "graphql-tag"
-import { useQuery, useMutation } from "@apollo/react-hooks"
-
-import { ReactComponent as DefaultProfilePicSvg } from "../components/assets/default_profile_pic/default_profile_pic.svg"
-
-const GET_USER_FROM_UID = gql`
-  query getUserEntry($user_id: String!) {
-    users(where: { user_id: { _eq: $user_id } }) {
-      username
-      email
-      display_name
-      profile_picture_url
-      bio
-      stream_token
-    }
-  }
-`
-
-interface IUserEntry {
-  username: string
-  email: string
-  display_name?: string
-  profile_picture_url?: string
-  bio?: string
-}
-
 const ReactComponent: React.FC = () => {
-  const [user] = useAuthState(auth)
-  const { data: userData } = useQuery(GET_USER_FROM_UID, {
-    variables: { user_id: user ? user.uid : "" },
-  })
-
-  const userEntry: IUserEntry | null =
-    userData && userData.users ? userData.users[0] : null
-
   useEffect(() => {
     segment.page()
   }, [])

@@ -48,7 +48,9 @@ const ReactComponent: React.FC = () => {
   })
 
   const userEntry: IUserEntry | null =
-    userData && userData.users ? userData.users[0] : null
+    userData && userData.users && userData.users.length > 0
+      ? userData.users[0]
+      : null
 
   useEffect(() => {
     segment.page()
